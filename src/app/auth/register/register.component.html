@@ -1,0 +1,50 @@
+<form class="mt-4" (ngSubmit)="register()" [formGroup]="registerForm">
+    <legend>Create an account</legend>
+
+    <div class="mb-3">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" formControlName="nameUser" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+        @let nameErrors = registerForm.get('nameUser')?.errors;
+        @if (nameErrors?.['required']) {
+            <div class="invalid-feedback">You must enter a username</div>
+        }
+    </div>
+    <div class="mb-3">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" formControlName="email"/>
+    </div>
+    <div class="mb-3">
+        <label for="email2">Repeat Email:</label>
+        <input type="email" class="form-control" formControlName="email2" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" formControlName="password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+    </div>
+    <div class="form-row">
+        <div class="mb-3 col">
+            <label for="lat">Latitude:</label>
+            <input type="text" class="form-control" formControlName="lat" placeholder="Geolocating..." readonly="readonly"/>
+        </div>
+        <div class="mb-3 col">
+            <label for="lng">Longitude:</label>
+            <input type="text" class="form-control" formControlName="lng"  placeholder="Geolocating..." readonly="readonly"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="avatar">Avatar image</label>
+        <input type="file" class="form-control" formControlName="avatar" #fileImage 
+      encodeBase64 (encoded) = "imageBase64 = $event"  [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}"/>
+    @let avatarErrors = registerForm.get("avatar")?.errors;
+    @if (avatarErrors?.['required']) {
+        <div class="invalid-feedback">An avatar is required</div>
+    }
+    </div>
+    @if (imageBase64) {
+        <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3"/>
+    }
+    <div>
+    <a class="btn btn-secondary" href="login.html" role="button">Go back</a>
+    <button type="submit" class="btn btn-primary">Create account</button>
+    </div>
+</form>
