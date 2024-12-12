@@ -1,16 +1,17 @@
-import { FormsModule } from '@angular/forms';
-import { Component, computed, inject, signal } from '@angular/core';
-import { MyEvent } from '../interfaces/my-event';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EventCardComponent } from '../event-card/event-card.component';
-import { EventsService } from '../services/events.service';
+import { Component, signal, computed, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
+import { EventCardComponent } from "../event-card/event-card.component";
+import { MyEvent } from "../interfaces/my-event";
+import { EventsService } from "../services/events.service";
+
 
 @Component({
-  selector: 'events-page',
-  standalone: true,
-  imports: [FormsModule, EventCardComponent],
-  templateUrl: './events-page.component.html',
-  styleUrl: './events-page.component.css',
+    selector: 'events-page',
+    standalone: true,
+    imports: [FormsModule, EventCardComponent],
+    templateUrl: './events-page.component.html',
+    styleUrl: './events-page.component.css'
 })
 export class EventsPageComponent {
   events = signal<MyEvent[]>([]);

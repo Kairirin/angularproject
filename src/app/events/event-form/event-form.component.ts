@@ -1,20 +1,21 @@
-import { Component, DestroyRef, inject } from '@angular/core';
-import { MyEvent } from '../interfaces/my-event';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
-import { EventsService } from '../services/events.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
-import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
-import { minDateValidator } from '../../shared/validators/min-date.validator';
-import { DatePipe } from '@angular/common';
+import { DatePipe } from "@angular/common";
+import { Component, inject, DestroyRef } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
+import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
+import { minDateValidator } from "../../shared/validators/min-date.validator";
+import { MyEvent } from "../interfaces/my-event";
+import { EventsService } from "../services/events.service";
+
 
 @Component({
-  selector: 'event-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe],
-  templateUrl: './event-form.component.html',
-  styleUrl: './event-form.component.css'
+    selector: 'event-form',
+    standalone: true,
+    imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe],
+    templateUrl: './event-form.component.html',
+    styleUrl: './event-form.component.css'
 })
 export class EventFormComponent {
   #eventsService = inject(EventsService);

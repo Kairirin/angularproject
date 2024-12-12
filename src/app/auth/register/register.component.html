@@ -9,17 +9,29 @@
             <div class="invalid-feedback">You must enter a username</div>
         }
     </div>
-    <div class="mb-3">
-        <label for="email">Email:</label>
-        <input type="email" class="form-control" formControlName="email"/>
-    </div>
-    <div class="mb-3">
-        <label for="email2">Repeat Email:</label>
-        <input type="email" class="form-control" formControlName="email2" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
-    </div>
+    <ng-container formGroupName="emailGroup">
+        <div class="mb-3">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+            <div class="invalid-feedback">You must enter an email with the correct format</div>
+        </div>
+        <div class="mb-3">
+            <label for="email2">Repeat Email:</label>
+            <input type="email" class="form-control" formControlName="email2" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+            @let emailsGroup = registerForm.get('emailGroup')!;
+            @let emailConfirm = emailsGroup.get('email2')!;
+            @if (email2.touched && emailsGroup.errors?.['matchValues']) {
+                <div class="invalid-feedback">The emails don't match</div>
+            }
+        </div>
+    </ng-container>
     <div class="mb-3">
         <label for="password">Password:</label>
         <input type="password" class="form-control" formControlName="password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+        @let pswErrors = registerForm.get('password')?.errors;
+        @if (pswErrors?.['required']) {
+            <div class="invalid-feedback">You must enter a password</div>
+        }
     </div>
     <div class="form-row">
         <div class="mb-3 col">
