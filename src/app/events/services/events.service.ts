@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { EventsResponse, SingleEventResponse } from '../interfaces/responses';
-import { MyEvent } from '../interfaces/my-event';
+import { MyEvent, MyEventInsert } from '../interfaces/my-event';
+import { EventsResponse, SingleEventResponse } from '../../shared/interfaces/responses';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,15 @@ export class EventsService {
   #eventsUrl = 'events';
   #http = inject(HttpClient);
 
-  getEvents(): Observable<MyEvent[]> {
-    return this.#http.get<EventsResponse>(this.#eventsUrl)
-      .pipe(map((resp) => resp.events));
+  getEvents(page = 1, order = "distance", search = "", creator?: string): Observable<MyEvent[]> {
+    let params;
+    if (creator)
+      params = new URLSearchParams({ page: String(page), order, search, creator });
+    else 
+      params = new URLSearchParams({ page: String(page), order, search });
+
+    return this.#http.get<EventsResponse>(`${this.#eventsUrl}?${params.toString()}`)
+    .pipe(map((resp) => resp.events));
   }
 
    getEvent(id: number): Observable<MyEvent> {
@@ -21,7 +27,7 @@ export class EventsService {
       .pipe(map((resp) => resp.event));
   }
 
-  addEvent(event: MyEvent): Observable<MyEvent> {
+  addEvent(event: MyEventInsert): Observable<MyEventInsert> {
     return this.#http.post<SingleEventResponse>(this.#eventsUrl, event)
       .pipe(map((resp) => resp.event));
   }

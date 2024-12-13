@@ -11,6 +11,6 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./events/events.routes').then((m) => m.eventsRoutes),
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' },
+  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/auth/login' },
 ];

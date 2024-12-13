@@ -3,24 +3,27 @@
 
     <div class="mb-3">
         <label for="name">Name:</label>
-        <input type="text" class="form-control" formControlName="nameUser" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+        <input type="text" class="form-control" formControlName="name" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
         @let nameErrors = registerForm.get('nameUser')?.errors;
         @if (nameErrors?.['required']) {
             <div class="invalid-feedback">You must enter a username</div>
         }
     </div>
     <ng-container formGroupName="emailGroup">
+    @let emailsGroup = registerForm.get('emailGroup')!;
         <div class="mb-3">
             <label for="email">Email:</label>
             <input type="email" class="form-control" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
-            <div class="invalid-feedback">You must enter an email with the correct format</div>
+             @let email = emailsGroup.get('email')!;
+             @if (email.errors?.['required']) {
+                <div class="invalid-feedback">You must enter an email with the correct format</div>
+            }
         </div>
         <div class="mb-3">
             <label for="email2">Repeat Email:</label>
             <input type="email" class="form-control" formControlName="email2" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
-            @let emailsGroup = registerForm.get('emailGroup')!;
             @let emailConfirm = emailsGroup.get('email2')!;
-            @if (email2.touched && emailsGroup.errors?.['matchValues']) {
+            @if (emailConfirm.touched && emailsGroup.errors?.['matchValues']) {
                 <div class="invalid-feedback">The emails don't match</div>
             }
         </div>
@@ -56,7 +59,7 @@
         <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3"/>
     }
     <div>
-    <a class="btn btn-secondary" href="login.html" role="button">Go back</a>
+    <a class="btn btn-secondary" href="auth/login" role="button">Go back</a>
     <button type="submit" class="btn btn-primary">Create account</button>
     </div>
 </form>

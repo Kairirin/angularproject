@@ -14,13 +14,13 @@ import { EventsService } from "../services/events.service";
     styleUrl: './events-page.component.css'
 })
 export class EventsPageComponent {
+  #eventsService = inject(EventsService);
   events = signal<MyEvent[]>([]);
   search = signal('');
   filteredEvents = computed(() => {
     const searchingBy = this.search()?.toLocaleLowerCase();
     return searchingBy ? this.events().filter((event) => event.title.toLocaleLowerCase().includes(searchingBy) || event.description.toLocaleLowerCase().includes(searchingBy)) : this.events();
   })
-  #eventsService = inject(EventsService);
 
   constructor() {
     this.#eventsService.getEvents().pipe(takeUntilDestroyed()).subscribe((events) => this.events.set(events));

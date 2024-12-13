@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
 import { minDateValidator } from "../../shared/validators/min-date.validator";
-import { MyEvent } from "../interfaces/my-event";
+import { MyEventInsert } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
 
 
@@ -37,8 +37,11 @@ export class EventFormComponent {
   imgBase64 = '';
 
   addEvent() {
-    const newEvent: MyEvent = {
+    const newEvent: MyEventInsert = {
       ...this.eventForm.getRawValue(),
+      lat: 0,
+      lng: 0,
+      address: '', //TODO: Modificar bien esto luego
       image: this.imgBase64
     };
 
