@@ -4,7 +4,7 @@
     <div class="mb-3">
         <label for="name">Name:</label>
         <input type="text" class="form-control" formControlName="name" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
-        @let nameErrors = registerForm.get('nameUser')?.errors;
+        @let nameErrors = registerForm.get('name')?.errors;
         @if (nameErrors?.['required']) {
             <div class="invalid-feedback">You must enter a username</div>
         }

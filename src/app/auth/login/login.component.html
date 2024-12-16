@@ -1,5 +1,5 @@
 <div class="container">
-  <form #formEvent="ngForm" (ngSubmit)="login()" class="mt-4" role="form">
+  <form (ngSubmit)="login()" class="mt-4" [formGroup]="loginForm">
     <legend>Welcome to SVTickets!</legend>
 
     <div class="mb-3">
@@ -7,22 +7,28 @@
       <input
         type="email"
         class="form-control"
-        name="email"
-        id="email"
-        placeholder="Email"
+        formControlName="email"
+        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"
         required
       />
+       @let emailErrors = loginForm.get('email')?.errors;
+        @if (emailErrors?.['required']) {
+          <div class="invalid-feedback">You must enter a valid email</div>
+        }
     </div>
     <div class="mb-3">
       <label for="password">Password:</label>
       <input
         type="password"
         class="form-control"
-        name="password"
-        id="password"
-        placeholder="Password"
+        formControlName="password"
+        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"
         required
       />
+      @let passErrors = loginForm.get('password')?.errors;
+      @if (passErrors?.['required']) {
+        <div class="invalid-feedback">You must enter a password</div>
+      }
     </div>
     <p class="text-danger" id="errorInfo"></p>
     <button type="submit" class="btn btn-primary">Login</button>

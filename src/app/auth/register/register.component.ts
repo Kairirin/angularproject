@@ -86,7 +86,7 @@ export class RegisterComponent {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
         this.saved = true;
-        this.#router.navigate(['/login']);
+        this.#router.navigate(['/auth/login']);
       });
   }
 }

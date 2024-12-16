@@ -1,29 +1,57 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { User, UserLogin } from '../../shared/interfaces/user';
-import { map, Observable } from 'rxjs';
-import { SingleUserResponse, TokenResponse } from '../../shared/interfaces/responses';
+import { catchError, map, Observable, of } from 'rxjs';
+import {
+  SingleUserResponse,
+  TokenResponse,
+} from '../../shared/interfaces/responses';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   #authUrl = 'auth';
+  #logged: WritableSignal<boolean> = signal(false);
   #http = inject(HttpClient);
 
-  register(user: User):  Observable<User> {
-    return this.#http.post<SingleUserResponse>(`${this.#authUrl}/register`, user).pipe(map((resp) => resp.user));
+  register(user: User): Observable<User> {
+    return this.#http
+      .post<SingleUserResponse>(`${this.#authUrl}/register`, user)
+      .pipe(map((resp) => resp.user));
   }
 
   login(user: UserLogin): Observable<TokenResponse> {
-    return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(map((resp) => resp));
+    return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(
+      map((resp) => {
+        this.#logged = signal(true);
+        localStorage.setItem('token', resp.accessToken);
+        return resp;
+      })
+    );
   }
 
-  checkToken(): Observable<void> {
-    return this.#http.get<void>(`${this.#authUrl}/validate`).pipe(map((resp) => resp));
-  } //TODO: CREO QUE ESTE MÉTODO NO HACE FALTA PORQUE YA VALIDARÁ EL GUARD
+  isLogged(): Observable<boolean> {
+    if (!this.#logged() && !localStorage.getItem('token')) {
+      return of(false);
+    } else if (!this.#logged() && localStorage.getItem('token')) {
+      return this.#http.get<Observable<void>>(`${this.#authUrl}/validate`).pipe(
+        map(() => {
+          this.#logged = signal(true);
+          return true;
+        }),
+        catchError(() => {
+          localStorage.removeItem('token');
+          this.#logged = signal(false);
+          return of(false);
+        })
+      );
+    }
+    return of(true);
+  }
 
   logout(): void {
     localStorage.removeItem('token');
-  } //TODO: ESTE MÉTODO LO HE PUESTO TAL CUAL EL OTRO PROYECTO. COMPROBAR
+    this.#logged = signal(false);
+  }
 }
