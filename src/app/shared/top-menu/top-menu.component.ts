@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { Component, inject, signal } from "@angular/core";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { AuthService } from "../../auth/services/auth.service";
 
 
 @Component({
@@ -10,5 +11,12 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
     styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
+    token = signal(localStorage.getItem('token')); //TODO: CORREGIR QUE LO MUESTRE CUANDO TOCA Y CUANDO NO
+    #authService = inject(AuthService);
+    #router = inject(Router);
 
+    logout() {
+        this.#authService.logout();
+        this.#router.navigate(['/auth/login']);
+    }
 }

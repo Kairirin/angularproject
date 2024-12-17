@@ -11,7 +11,7 @@ export class EventsService {
   #eventsUrl = 'events';
   #http = inject(HttpClient);
 
-  getEvents(page = 1, order = "distance", search = "", creator?: string): Observable<MyEvent[]> {
+   getEvents(page = 1, order = "distance", search = "", creator?: string): Observable<MyEvent[]> {
     let params;
     if (creator)
       params = new URLSearchParams({ page: String(page), order, search, creator });

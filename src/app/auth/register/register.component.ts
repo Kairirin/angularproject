@@ -10,12 +10,13 @@ import { MyGeolocation } from "../my-geolocation";
 import { User } from "../../shared/interfaces/user";
 import { AuthService } from "../services/auth.service";
 import { Coordinates } from "../../shared/interfaces/coordinates";
+import { JsonPipe } from "@angular/common";
 
 
 @Component({
     selector: 'register',
     standalone: true,
-    imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective],
+    imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, JsonPipe],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -39,9 +40,9 @@ export class RegisterComponent {
       }),
       email2: new FormControl('', { 
         nonNullable: true,
-        validators: [Validators.required, Validators.email] 
+        validators: [Validators.required] 
       }),
-    }, { validators: matchValues ('email', 'email2') }), //TODO: No hace bien la validación
+    }, { validators: matchValues('email', 'email2') }), //TODO: No hace bien la validación
     password: new FormControl('', { 
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(4)] 

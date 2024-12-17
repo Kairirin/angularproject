@@ -61,8 +61,9 @@ export class LoginComponent {
     
     this.#authService.login(this.userLogin)
     .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe(() => {
-      this.#router.navigate(['/events']);
-    })
+    .subscribe({
+      next: () => this.#router.navigate(['/events']),
+      error: () => alert("Login incorrecto")//TODO: Mostrar error en modal
+    });
   }
 }
