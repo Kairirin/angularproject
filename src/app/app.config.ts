@@ -4,6 +4,7 @@ import { baseUrlInterceptor } from './shared/interceptors/base-url.interceptor';
 import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
+import { provideGoogleId } from './auth/google-login/google-login.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +15,6 @@ export const appConfig: ApplicationConfig = {
       withPreloading(PreloadAllModules)
     ),
     provideHttpClient(withInterceptors([baseUrlInterceptor, authInterceptor])),
+    provideGoogleId('1161264609-p0pct0u7g1b72j2riaqp1mlh284l4smk.apps.googleusercontent.com') //''
   ],
 };

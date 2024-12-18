@@ -8,11 +8,12 @@ import { from } from "rxjs";
 import { MyGeolocation } from "../my-geolocation";
 import { UserLogin } from "../../shared/interfaces/user";
 import { Coordinates } from "../../shared/interfaces/coordinates";
+import { GoogleLoginDirective } from "../google-login/google-login.directive";
 
 @Component({
     selector: 'login',
     standalone: true,
-    imports: [ReactiveFormsModule, ValidationClassesDirective],
+    imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })
@@ -65,5 +66,11 @@ export class LoginComponent {
       next: () => this.#router.navigate(['/events']),
       error: () => alert("Login incorrecto")//TODO: Mostrar error en modal
     });
+  }
+
+  loggedGoogle(resp: google.accounts.id.CredentialResponse) {
+    localStorage.setItem('token', resp.credential);
+    this.#router.navigate(['/events']); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
+    /* console.log(resp.credential); */
   }
 }
