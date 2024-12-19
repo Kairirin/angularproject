@@ -42,7 +42,7 @@ export class RegisterComponent {
         nonNullable: true,
         validators: [Validators.required] 
       }),
-    }, { validators: matchValues('email', 'email2') }), //TODO: No hace bien la validación
+    }, { validators: matchValues('email', 'email2') }), //TODO: No hace bien la validación del segundo email
     password: new FormControl('', { 
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(4)] 

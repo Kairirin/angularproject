@@ -1,14 +1,43 @@
 <div class="card shadow">
     <a [routerLink]="['/events', event().id]"><img class="card-img-top" [src]="event().image" [alt]="event().title" /></a>
     <div class="card-body">
-        <h4 class="card-title"><a [routerLink]="['/events', event().id]">{{ event().title }}</a></h4>
+        <h4 class="card-title">
+            <a [routerLink]="['/events', event().id]">{{ event().title }}</a>
+        </h4>
         <p class="card-text">{{ event().description }}</p>
-        <button class="btn btn-danger delete" (click)="deleteEvent()">
-            <i class="bi bi-trash"></i>
-        </button>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-danger delete" (click)="deleteEvent()">
+                <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <!--ASISTENCIA-->
+            <div class="col-auto ms-auto">
+              <div class="text-end attend-users"><i class="bi bi-people-fill"></i> {{ event().numAttend }}</div>
+              <div [ngClass]="{
+                'text-success text-end m-0 attend-button': event().attend,
+                'text-danger text-end m-0 attend-button': !event().attend
+              }"><i [ngClass]="{
+                'bi bi-hand-thumbs-up-fill': event().attend, 
+                'bi bi-hand-thumbs-down-fill': !event().attend 
+                }"></i>
+             {{ event().attend ? " I'm going" : " I'm not going" }} </div>
+            </div>
+        </div>
     </div>
     <div class="card-footer text-muted row m-0">
-        <div class="col">{{ event().date | date: 'dd/MM/yyyy' }}</div>
-        <div class="col text-end">{{ event().price | intlCurrency : "EUR" : "es-ES"}} </div>
+        <div class="col-auto avatar pl-1 pr-1">
+            <a href=""> <!-- TODO: Añadir enlaces bien -->
+              <img src="{{ event().creator.avatar }}" class="rounded-circle" />
+            </a>
+          </div>
+          <div class="col">
+            <div class="name"><a href="">{{ event().creator.name }}</a></div>
+            <div class="date small text-muted">{{ event().date | date: 'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="col-auto text-end text-muted">
+            <div class="price small">{{ event().price | intlCurrency : "EUR" : "es-ES"}}</div>
+            <div class="distance small">{{ event().distance }} km</div>
+          </div>
     </div>
 </div>

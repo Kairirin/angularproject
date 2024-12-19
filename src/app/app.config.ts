@@ -5,6 +5,7 @@ import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@
 import { provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
 import { provideGoogleId } from './auth/google-login/google-login.config';
+import { provideFacebookId } from './auth/facebook-login/facebook-login.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
       withPreloading(PreloadAllModules)
     ),
     provideHttpClient(withInterceptors([baseUrlInterceptor, authInterceptor])),
-    provideGoogleId('1161264609-p0pct0u7g1b72j2riaqp1mlh284l4smk.apps.googleusercontent.com') //''
+    provideGoogleId('1161264609-p0pct0u7g1b72j2riaqp1mlh284l4smk.apps.googleusercontent.com'),//''
+    provideFacebookId('3885915868319779', 'v21.0') //APP_ID
   ],
 };

@@ -1,2 +1,25 @@
 @import "bootstrap/dist/css/bootstrap.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
+
+#map {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+.autocomplete-container {
+  position: relative;
+}
+
+#profile div:has(#avatar) {
+    position: relative;
+    & > label {
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+    }
+  }
+  
+  #address {
+    position: relative;
+  }

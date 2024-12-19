@@ -9,11 +9,14 @@ import { MyGeolocation } from "../my-geolocation";
 import { UserLogin } from "../../shared/interfaces/user";
 import { Coordinates } from "../../shared/interfaces/coordinates";
 import { GoogleLoginDirective } from "../google-login/google-login.directive";
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { FbLoginDirective } from "../facebook-login/fb-login.directive";
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
     selector: 'login',
     standalone: true,
-    imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective],
+    imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective, FbLoginDirective, FaIconComponent],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })
@@ -22,6 +25,7 @@ export class LoginComponent {
   #authService = inject(AuthService);
   #destroyRef = inject(DestroyRef);
   geolocation = toSignal(from(MyGeolocation.getLocation().then()));
+  iconFacebook = faFacebook;
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -72,5 +76,16 @@ export class LoginComponent {
     localStorage.setItem('token', resp.credential);
     this.#router.navigate(['/events']); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
     /* console.log(resp.credential); */
+  }
+
+  loggedFacebook(resp: fb.StatusResponse) {
+    // Envía esto a tu API
+/*     localStorage.setItem('token', resp.authResponse.accessToken!);
+    this.#router.navigate(['/events']); */ //TODO: ARREGLAR ESTO BIEN
+    console.log(resp.authResponse.accessToken);
+  }
+
+  showError(error: string) {
+    console.error(error);
   }
 }
