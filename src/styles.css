@@ -22,14 +22,27 @@ a {
 }
 
 #profile div:has(#avatar) {
-    position: relative;
-    & > label {
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-    }
+  position: relative;
+
+  &>label {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
   }
-  
-  #address {
-    position: relative;
+}
+
+#address {
+  position: relative;
+}
+
+.user-info {
+  width: 8rem;
+
+  .avatar {
+    width: 4rem;
   }
+}
+
+.comment {
+  white-space: pre-wrap;
+}

@@ -53,6 +53,28 @@ export class EventFormComponent {
       });
   }
 
+  //TODO: Tengo ya hechos todos los imports de mapas etc
+
+/*   <ol-map [coordinates]="coordinates()">
+  <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
+  <ol-marker [coordinates]="coordinates()"></ol-marker>
+</ol-map>
+
+@Component({
+  //..
+  imports: [OlMapDirective, OlMarkerDirective, GaAutocompleteDirective],
+  //...
+})
+export class AppComponent {
+  //...
+  coordinates = signal<[number, number]>([-0.5, 38.5]);
+
+  changePlace(result: SearchResult) {
+    this.coordinates.set(result.coordinates);
+    console.log(result.address); // Habría que guardarlo
+  }
+} */
+
   canDeactivate() {
     return this.saved || this.eventForm.pristine || confirm('Are you sure? The changes will be lost...');
   }

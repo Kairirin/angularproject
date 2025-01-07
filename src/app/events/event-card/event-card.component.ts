@@ -16,13 +16,14 @@ import { EventsService } from "../services/events.service";
 export class EventCardComponent {
   event = input.required<MyEvent>();
   deleted = output<void>();
+  newAttendance = output<void>();
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
   #changeDetector = inject(ChangeDetectorRef);
 
     attendEvent() {
       const attending = this.event().attend;
-
+      console.log(this.event());
       if (!this.event().attend) {
         this.event().attend = true;
         this.event().numAttend++;
@@ -31,7 +32,8 @@ export class EventCardComponent {
           .pipe(takeUntilDestroyed(this.#destroyRef))
           .subscribe({
             next: () => {
-              console.log("Bien"); //TODO: Enlazar con la lista de detalle
+              console.log("Bien"); //TODO: Borrar todos los console.log
+              this.newAttendance.emit();
             },
             error: () => {
               console.log("Mal");
@@ -48,7 +50,8 @@ export class EventCardComponent {
         .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe({
           next: () => {
-            console.log("Bien"); //TODO: Enlazar con la lista de detalle
+            console.log("Bien"); 
+            this.newAttendance.emit();
           },
           error: () => {
             console.log("Mal");

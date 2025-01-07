@@ -1,4 +1,4 @@
-import { MyEvent } from "../../events/interfaces/my-event";
+import { Comment, MyEvent } from "../../events/interfaces/my-event";
 import { User } from "../../shared/interfaces/user";
 
 export interface EventsResponse {
@@ -28,3 +28,6 @@ export interface UsersResponse {
     users: User[];
 }
 
+export interface CommentsResponse {
+    comments: Comment[];
+}
