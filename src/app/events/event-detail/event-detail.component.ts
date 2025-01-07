@@ -77,7 +77,7 @@ export class EventDetailComponent {
         this.comments.update((com) => [...com, result])
       },
       error: () => {
-        console.log("Mal");
+        console.log("Mal"); //TODO: Mensaje de no puedes comentar eventos a los que no asistes
       },
     });
   }
