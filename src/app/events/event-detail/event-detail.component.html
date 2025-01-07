@@ -1,6 +1,24 @@
 <div class="mt-4">
-    <event-card class="col" [event]= 'event()' (deleted)="deleteEvent()"></event-card>
+    <event-card class="col" [event]='event()' (deleted)="deleteEvent()"></event-card>
 </div>
+<div class="card mt-4">
+  <div class="card-header bg-success text-white" id="address">{{ this.event().title }} address</div>
+  <div id="map"><ol-map [coordinates]="[event().lat,event().lng]"></ol-map></div>
+</div>
+
+<div class="card mt-4 mb-4">
+  <div class="card-header bg-danger text-white" id="address">Attendees to the event</div>
+  <ul class="list-group" id="userList">
+    <!-- Attendees go here. See the template at the bottom of this page -->
+  </ul>
+</div>
+
+<!-- <div class="card mt-4 mb-4">
+  <div class="card-header bg-info text-white" id="address">User comments</div>
+  <ul class="list-group" id="userComments">
+  </ul>
+</div> -->
+
 <div class="mt-4 mb-4">
   <button class="btn btn-success" (click)="goBack()">Go back</button>
 </div>

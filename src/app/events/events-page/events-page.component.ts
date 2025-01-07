@@ -1,37 +1,64 @@
-import { Component, signal, computed, inject } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormsModule } from "@angular/forms";
+import { Component, signal, inject, DestroyRef, effect } from "@angular/core";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { EventCardComponent } from "../event-card/event-card.component";
 import { MyEvent } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
+import { debounceTime, distinctUntilChanged } from "rxjs";
 
 
 @Component({
     selector: 'events-page',
     standalone: true,
-    imports: [FormsModule, EventCardComponent],
+    imports: [ReactiveFormsModule, EventCardComponent],
     templateUrl: './events-page.component.html',
     styleUrl: './events-page.component.css'
 })
 export class EventsPageComponent {
   #eventsService = inject(EventsService);
+  #destroyRef = inject(DestroyRef);
   events = signal<MyEvent[]>([]);
-  search = signal('');
-  filteredEvents = computed(() => {
-    const searchingBy = this.search()?.toLocaleLowerCase();
-    return searchingBy ? this.events().filter((event) => event.title.toLocaleLowerCase().includes(searchingBy) || event.description.toLocaleLowerCase().includes(searchingBy)) : this.events();
-  })
+  searchControl = new FormControl('');
+  search = toSignal(
+    this.searchControl.valueChanges.pipe(
+        debounceTime(600),
+        distinctUntilChanged(),
+    ),
+    { initialValue: '' }
+  )
+
+  order = signal("distance");
+  page = signal(1);
+  load = signal(false);
 
   constructor() {
-    this.#eventsService.getEvents().pipe(takeUntilDestroyed()).subscribe((events) => this.events.set(events));
+    effect(() => {
+      this.#eventsService
+        .getEvents(this.search()!, this.order(), this.page())
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe((resp) => {
+          if(this.page() === 1)
+            this.events.set(resp.events)
+          else
+            this.events.update((events) => [...events, ...resp.events])
+
+          if(resp.more) {
+            this.load.set(true);
+          }
+          else {
+            this.load.set(false);
+          }
+        });
+    });
+  } 
+
+  changeOrder(type: string){
+    this.page.set(1);
+    this.order.set(type);
   }
 
-  orderEventsByDate() {
-    this.events.update((events) => [...events.toSorted((e1, e2) => e1.date.localeCompare(e2.date))]);
-  }
-
-  orderEventsByPrice() {
-    this.events.update((events) => [...events.toSorted((e1, e2) => e1.price - e2.price)]);
+  loadMore() {
+    this.page.update((page) => ++page);
   }
 
   deleteEvent(event: MyEvent) {

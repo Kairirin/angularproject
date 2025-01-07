@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authenticatedGuard } from './shared/guards/authenticated.guard';
 
 export const routes: Routes = [
   {
@@ -8,6 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'events',
+    canActivate: [authenticatedGuard],
     loadChildren: () =>
       import('./events/events.routes').then((m) => m.eventsRoutes),
   },

@@ -18,6 +18,15 @@ export const eventsRoutes: Routes = [
     canDeactivate: [leavePageGuard],
   },
   {
+    path: ':id/edit',
+    canActivate: [numericIdGuard],
+    resolve: {
+      event: eventResolver,
+    },
+    loadComponent: () =>
+        import('./event-detail/event-detail.component').then((m) => m.EventDetailComponent),
+  },
+  {
     path: ':id',
     canActivate: [numericIdGuard],
     resolve: {

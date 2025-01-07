@@ -2,21 +2,27 @@
   <div class="container-fluid">
     <ul class="nav">
       <li class="nav-item">
-        <button class="nav-link" id="orderDate" (click)="orderEventsByDate()">Order by date</button>
+        <button class="nav-link" id="orderDate" (click)="changeOrder('date')">Order by date</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" id="orderPrice" (click)="orderEventsByPrice()">Order by price</button>
+        <button class="nav-link" id="orderPrice" (click)="changeOrder('price')">Order by price</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="orderDistance" (click)="changeOrder('distance')">Order by distance</button>
       </li>
     </ul>
     <form class="d-flex mb-0">
-      <input class="form-control me-2" type="text" name="search" id="search" placeholder="Search" aria-label="Search"
-        [(ngModel)]="search">
+      <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" [formControl]="searchControl">
     </form>
   </div>
 </nav>
 
 <div id="eventsContainer" class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-  @for (event of filteredEvents(); track event.id){
+  @for (event of events(); track event.id){
   <event-card class="col" [event]="event" (deleted)="deleteEvent(event)"></event-card>
   }
 </div>
+
+@if (load()){
+  <div class="mb-4"><button (click)="loadMore()" class="btn btn-primary">Load More events</button></div>
+}

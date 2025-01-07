@@ -8,11 +8,13 @@ import { EventCardComponent } from '../event-card/event-card.component';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MyEvent } from '../interfaces/my-event';
+import { MapDisplayerComponent } from '../../shared/components/map-displayer/map-displayer.component';
+import { OlMapDirective } from '../../shared/ol-maps/ol-map.directive';
 
 @Component({
     selector: 'event-detail',
     standalone: true,
-    imports: [EventCardComponent],
+    imports: [EventCardComponent, MapDisplayerComponent, OlMapDirective],
     templateUrl: './event-detail.component.html',
     styleUrl: './event-detail.component.css'
 })

@@ -11,7 +11,7 @@ export class EventsService {
   #eventsUrl = 'events';
   #http = inject(HttpClient);
 
-   getEvents(page = 1, order = "distance", search = "", creator?: string): Observable<MyEvent[]> {
+   getEvents(search: string, order: string, page: number, creator?: string): Observable<EventsResponse> {
     let params;
     if (creator)
       params = new URLSearchParams({ page: String(page), order, search, creator });
@@ -19,7 +19,7 @@ export class EventsService {
       params = new URLSearchParams({ page: String(page), order, search });
 
     return this.#http.get<EventsResponse>(`${this.#eventsUrl}?${params.toString()}`)
-    .pipe(map((resp) => resp.events));
+    .pipe(map((resp) => resp));
   }
 
    getEvent(id: number): Observable<MyEvent> {
@@ -34,5 +34,13 @@ export class EventsService {
 
   deleteEvent(id: number): Observable<void> {
     return this.#http.delete<void>(`${this.#eventsUrl}/${id}`);
+  }
+
+  postAttend(id: number): Observable<void> {
+    return this.#http.post<void>(`${this.#eventsUrl}/${id}/attend`, null);
+  }
+
+  deleteAttend(id: number): Observable<void> { 
+    return this.#http.delete<void>(`${this.#eventsUrl}/${id}/attend`);
   }
 }

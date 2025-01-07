@@ -5,30 +5,37 @@
             <a [routerLink]="['/events', event().id]">{{ event().title }}</a>
         </h4>
         <p class="card-text">{{ event().description }}</p>
+
         <div class="row">
             <div class="col">
+              @if (event().creator.me) {
+                <button class="btn btn-success">
+                  <i class="bi bi-pencil"> Edit</i>
+                  </button><!--         <a [routerLink]="['/events', event().id, 'edit']" class="btn btn-success">Edit</a> -->
                 <button class="btn btn-danger delete" (click)="deleteEvent()">
                 <i class="bi bi-trash"></i>
                 </button>
+              }
             </div>
             <!--ASISTENCIA-->
             <div class="col-auto ms-auto">
-              <div class="text-end attend-users"><i class="bi bi-people-fill"></i> {{ event().numAttend }}</div>
-              <div [ngClass]="{
-                'text-success text-end m-0 attend-button': event().attend,
-                'text-danger text-end m-0 attend-button': !event().attend
-              }"><i [ngClass]="{
-                'bi bi-hand-thumbs-up-fill': event().attend, 
-                'bi bi-hand-thumbs-down-fill': !event().attend 
+              <div class="text-end attend-users"><i class="bi bi-people-fill"></i> {{ this.event().numAttend }}</div>
+              <div (click)="attendEvent()" (keydown.enter)="attendEvent()" tabindex="0" role="button" class="text-end m-0 attend-button" [ngClass]="{
+                'text-success': this.event().attend,
+                'text-danger': !this.event().attend
+                }"><i class="bi"  [ngClass]="{
+                'bi-hand-thumbs-up-fill': this.event().attend, 
+                'bi-hand-thumbs-down-fill': !this.event().attend
                 }"></i>
-             {{ event().attend ? " I'm going" : " I'm not going" }} </div>
+                {{ this.event().attend ? " I'm going" : " I'm not going" }} 
+              </div>
             </div>
         </div>
     </div>
     <div class="card-footer text-muted row m-0">
         <div class="col-auto avatar pl-1 pr-1">
             <a href=""> <!-- TODO: Añadir enlaces bien -->
-              <img src="{{ event().creator.avatar }}" class="rounded-circle" />
+              <img src="{{ event().creator.avatar }}" class="rounded-circle" alt="{{ event().creator.name }}"/>
             </a>
           </div>
           <div class="col">
