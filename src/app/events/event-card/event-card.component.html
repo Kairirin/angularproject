@@ -8,10 +8,8 @@
 
         <div class="row">
             <div class="col">
-              @if (event().creator.me) {
-                <button class="btn btn-success">
-                  <i class="bi bi-pencil"> Edit</i>
-                  </button><!--         <a [routerLink]="['/events', event().id, 'edit']" class="btn btn-success">Edit</a> -->
+              @if (event().mine) {
+                <a [routerLink]="['/events', event().id, 'edit']" class="btn btn-success">Edit</a>
                 <button class="btn btn-danger delete" (click)="deleteEvent()">
                 <i class="bi bi-trash"></i>
                 </button>

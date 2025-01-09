@@ -17,6 +17,13 @@
           [routerLinkActive]="['active']"
           >New event</a>
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [routerLink]="['/profile/me']"
+          [routerLinkActive]="['active']"
+          >My profile</a>
+      </li>
     </ul>
     @if (token()) {
     <ul class="navbar-nav">

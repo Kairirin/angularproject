@@ -9,7 +9,12 @@ export const eventResolver: ResolveFn<MyEvent> = (route) => {
   const router = inject(Router);
   return eventsService.getEvent(+route.params['id']).pipe(
     catchError(() => {
-      router.navigate(['/events']);
+      if(location.pathname.includes("edit")){
+        router.navigate(['/events/add']);
+      }
+      else {
+        router.navigate(['/events']);
+      }
       return EMPTY;
     })
   );

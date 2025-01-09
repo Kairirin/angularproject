@@ -6,7 +6,7 @@ import { ValidationClassesDirective } from "../../shared/directives/validation-c
 import { matchValues } from "../../shared/validators/match-values.Validator";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { from } from "rxjs";
-import { MyGeolocation } from "../my-geolocation";
+import { MyGeolocation } from "../../shared/my-geolocation";
 import { User } from "../../shared/interfaces/user";
 import { AuthService } from "../services/auth.service";
 import { Coordinates } from "../../shared/interfaces/coordinates";
@@ -26,7 +26,7 @@ export class RegisterComponent {
   saved = false;
   #destroyRef = inject(DestroyRef);
   imageBase64 = '';
-  geolocation = toSignal(from(MyGeolocation.getLocation().then()));
+  actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -64,8 +64,8 @@ export class RegisterComponent {
   constructor() {
     effect(() => {
       const coords: Coordinates = {
-        latitude: this.geolocation()?.latitude ?? 0,
-        longitude: this.geolocation()?.longitude ?? 0
+        latitude: this.actualGeolocation()?.latitude ?? 0,
+        longitude: this.actualGeolocation()?.longitude ?? 0
       } 
 
       if (coords) {

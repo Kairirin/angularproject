@@ -28,8 +28,13 @@ export class EventsService {
       .pipe(map((resp) => resp.event));
   }
 
-  addEvent(event: MyEventInsert): Observable<MyEventInsert> {
+  addEvent(event: MyEventInsert): Observable<MyEvent> { //TODO: Antes tenía MyEventInsert
     return this.#http.post<SingleEventResponse>(this.#eventsUrl, event)
+      .pipe(map((resp) => resp.event));
+  }
+
+  editEvent(event: MyEventInsert, id: number): Observable<MyEvent>{
+    return this.#http.put<SingleEventResponse>(`${this.#eventsUrl}/${id}`, event)
       .pipe(map((resp) => resp.event));
   }
 

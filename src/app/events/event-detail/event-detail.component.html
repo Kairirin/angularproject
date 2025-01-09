@@ -2,7 +2,7 @@
   <event-card class="col" [event]='event()' (deleted)="deleteEvent()" (newAttendance)="getAttendance()"></event-card>
 </div>
 <div class="card mt-4">
-  <div class="card-header bg-success text-white" id="address">{{ this.event().title }} address</div>
+  <div class="card-header bg-success text-white" id="address">{{ this.event().address }}</div>
   <div id="map"><ol-map [coordinates]="[event().lng, event().lat]">
       <ol-marker [coordinates]="[event().lng, event().lat]"></ol-marker>
     </ol-map></div>

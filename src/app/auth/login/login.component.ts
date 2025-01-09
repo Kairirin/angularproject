@@ -5,13 +5,13 @@ import { ValidationClassesDirective } from "../../shared/directives/validation-c
 import { AuthService } from "../services/auth.service";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { from } from "rxjs";
-import { MyGeolocation } from "../my-geolocation";
+import { MyGeolocation } from "../../shared/my-geolocation";
 import { UserLogin } from "../../shared/interfaces/user";
-import { Coordinates } from "../../shared/interfaces/coordinates";
 import { GoogleLoginDirective } from "../google-login/google-login.directive";
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { FbLoginDirective } from "../facebook-login/fb-login.directive";
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { Coordinates } from "../../shared/interfaces/coordinates";
 
 @Component({
     selector: 'login',
@@ -24,7 +24,7 @@ export class LoginComponent {
   #router = inject(Router);
   #authService = inject(AuthService);
   #destroyRef = inject(DestroyRef);
-  geolocation = toSignal(from(MyGeolocation.getLocation().then()));
+  actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   iconFacebook = faFacebook;
 
   loginForm = new FormGroup({
@@ -45,19 +45,18 @@ export class LoginComponent {
     lng: 0
   }
 
-  construct(){
+  constructor(){
     effect(() => {
       const coords: Coordinates = {
-        latitude: this.geolocation()?.latitude ?? 0,
-        longitude: this.geolocation()?.longitude ?? 0
-      } //TODO: Tampoco coge las coordenadas, arreglar
+        latitude: this.actualGeolocation()?.latitude ?? 0,
+        longitude: this.actualGeolocation()?.longitude ?? 0
+      }
 
       if (coords) {
         this.userLogin.lat = coords.latitude;
         this.userLogin.lng = coords.longitude;
       }
     });
-    
   }
   
   login(){

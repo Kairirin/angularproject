@@ -81,6 +81,14 @@
   @if(imgBase64) {
   <img [src]="imgBase64" [alt]="eventForm.get('title')" id="imgPreview" class="img-thumbnail mb-3"/>
   }
+  <div class="card mt-4">
+    <div id="map">
+      <ol-map [coordinates]="coordinates()">
+        <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
+        <ol-marker [coordinates]="coordinates()"></ol-marker>
+      </ol-map>
+    </div>
+  </div>
   <div>
     <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Create</button>
   </div>
