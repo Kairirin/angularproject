@@ -18,8 +18,15 @@ export class EventsService {
       params = new URLSearchParams({ page: String(page), order, search, creator });
     else 
       params = new URLSearchParams({ page: String(page), order, search });
-
+    
     return this.#http.get<EventsResponse>(`${this.#eventsUrl}?${params.toString()}`)
+    .pipe(map((resp) => resp));
+  }
+
+  getEventsAttending(search: string, order: string, page: number, attending: string): Observable<EventsResponse> {
+    const params = new URLSearchParams({ page: String(page), order, search });
+    
+    return this.#http.get<EventsResponse>(`${this.#eventsUrl}?${params.toString()}&attending=${attending}`)
     .pipe(map((resp) => resp));
   }
 

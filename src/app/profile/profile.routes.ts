@@ -18,4 +18,5 @@ export const profileRoutes: Routes = [
     loadComponent: () =>
         import('./profile/profile.component').then((m) => m.ProfileComponent),
   },
+  { path: '', redirectTo: '/profile/me', pathMatch: 'full' },
 ];

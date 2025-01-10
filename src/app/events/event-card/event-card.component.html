@@ -32,12 +32,12 @@
     </div>
     <div class="card-footer text-muted row m-0">
         <div class="col-auto avatar pl-1 pr-1">
-            <a href=""> <!-- TODO: Añadir enlaces bien -->
+            <a [routerLink]="['/profile', event().creator.id]"> <!-- TODO: Añadir enlaces bien -->
               <img src="{{ event().creator.avatar }}" class="rounded-circle" alt="{{ event().creator.name }}"/>
             </a>
           </div>
           <div class="col">
-            <div class="name"><a href="">{{ event().creator.name }}</a></div>
+            <div class="name"><a [routerLink]="['/profile', event().creator.id]">{{ event().creator.name }}</a></div>
             <div class="date small text-muted">{{ event().date | date: 'dd/MM/yyyy' }}</div>
           </div>
           <div class="col-auto text-end text-muted">

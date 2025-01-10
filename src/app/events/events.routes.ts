@@ -35,4 +35,5 @@ export const eventsRoutes: Routes = [
     loadComponent: () =>
         import('./event-detail/event-detail.component').then((m) => m.EventDetailComponent),
   },
+  { path: 'edit', redirectTo: '/events/add', pathMatch: 'full' },
 ];

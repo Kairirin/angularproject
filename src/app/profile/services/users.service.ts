@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AvatarResponse, SingleUserResponse } from '../../shared/interfaces/responses';
-import { User } from '../../shared/interfaces/user';
+import { User, UserPasswordEdit, UserPhotoEdit, UserProfileEdit } from '../../shared/interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +20,16 @@ export class UsersService {
         .pipe(map((resp)=> resp.user));
   }
 
-  saveAvatar(avatar: string): Observable<string> {
+  saveAvatar(avatar: UserPhotoEdit): Observable<string> {
     return this.#http.put<AvatarResponse>(`${this.#usersUrl}/me/photo`, avatar)
     .pipe(map((resp)=> resp.avatar));
-  } //TODO: Mirar servicios Proyecto1 si no funciona
+  }
 
-  saveProfile(name: string, email: string): Observable<void> {
-    return this.#http.put<void>(`${this.#usersUrl}/me`, { name: name, email: email });
-  } //TODO: Mirar servicios Proyecto1 si no funciona
+  saveProfile(profile: UserProfileEdit): Observable<void> {
+    return this.#http.put<void>(`${this.#usersUrl}/me`, profile);
+  }
 
-  savePassword(password: string): Observable<void> {
-    return this.#http.put<void>(`${this.#usersUrl}/me/password`, { password: password });
-  } //TODO: Mirar servicios Proyecto1 si no funciona
+  savePassword(password: UserPasswordEdit): Observable<void> {
+    return this.#http.put<void>(`${this.#usersUrl}/me/password`, password);
+  } 
 }

@@ -1,1 +1,93 @@
-<p>profile works!</p>
+<div class="row mt-4" id="profile">
+    <div class="col-3">
+        <div>
+            <img class="w-100" id="avatar" [src]="user().avatar" alt="{{ user().name }}'s avatar" />
+            @if (user().me) {
+            <label class="btn btn-sm btn-danger">
+                <i class="bi bi-image"></i>
+                <input type="file" id="photoInput" class="d-none" />
+            </label>
+            }
+        </div>
+    </div>
+
+    <div class="col-9" id="profileInfo">
+        <!--  Cambiar h4 por inputs con un botón -->
+        @if (!editProfile() && !editPassword()) {
+        <h4 id="name">{{ user().name }}</h4>
+        <h4 id="email">
+            <small class="text-muted">{{ user().email }}</small>
+        </h4>
+        <!-- Añadir campo de modificar password que muestre 2 campos -->
+        @if (user().me) {
+        <div>
+            <button class="btn btn-primary" id="editProfile" (click)="changeButton('profile')">
+                <i class="fa-regular fa-pen-to-square"></i>
+                Edit profile
+            </button>
+            <button class="btn btn-success" id="editPassword" (click)="changeButton('password')">
+                <i class="fa-solid fa-lock"></i>
+                Edit password
+            </button>
+        </div>
+        }
+        <div>
+            <a [routerLink]="['/events']" [queryParams]="{ creator: user().id }">{{ user().name }}'s events</a>
+        </div>
+        <div>
+            <a [routerLink]="['/events']" [queryParams]="{ attending: user().id }">Events attending</a>
+        </div>
+        }
+
+        @if (editProfile()) {
+        <div class="col-9" id="profileForm">
+            <form (ngSubmit)="updateProfile()" [formGroup]="profileForm">
+                <div class="mb-3">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" formControlName="name"
+                        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+                    @let nameErrors = profileForm.get('name')?.errors;
+                    @if (nameErrors?.['required']) {
+                    <div class="invalid-feedback">You must enter a valid username</div>
+                    }
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" formControlName="email"
+                        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+                    @let emailErrors = profileForm.get('email')?.errors;
+                    @if (emailErrors?.['required']) {
+                    <div class="invalid-feedback">You must enter a valid email</div>
+                    }
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-danger" (click)="changeButton('profile')">Cancel</button>
+            </form>
+        </div>
+        }
+
+        @if (editPassword()) {
+        <div class="col-9" id="passwordForm">
+            <form>
+                <div class="mb-3">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                    <label for="password2">Repeat password:</label>
+                    <input type="password" class="form-control" name="password2" id="password2"
+                        placeholder="Repeat password" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-danger" (click)="changeButton('password')">Cancel</button>
+            </form>
+        </div>
+        }
+    </div>
+
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-success text-white" id="address">{{ this.user().name }}'s address</div>
+    <div id="map">
+        <ol-map [coordinates]="[user().lng, user().lat]">
+            <ol-marker [coordinates]="[user().lng, user().lat]"></ol-marker>
+        </ol-map>
+    </div>
+</div>
