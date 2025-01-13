@@ -22,6 +22,12 @@ export interface UserGoogle {
     lng?: number;
 }
 
+export interface UserFacebook {
+    token: string;
+    lat?: number;
+    lng?: number;
+}
+
 
 export interface UserProfileEdit {
     name: string;

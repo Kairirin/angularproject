@@ -15,6 +15,9 @@
         @if (emailErrors?.['required']) {
           <div class="invalid-feedback">You must enter a valid email</div>
         }
+        @if (emailErrors?.['email']) {
+          <div class="invalid-feedback">You must enter a valid email</div>
+        }
     </div>
     <div class="mb-3">
       <label for="password">Password:</label>
@@ -34,12 +37,12 @@
     <button type="submit" class="btn btn-primary">Login</button>
   </form>
   <div>
-    <google-login class="btn" (login)="loggedGoogle($event)"></google-login>
+    <google-login class="btn" (login)="loginGoogle($event)"></google-login>
     <button
       fbLogin
       [scopes]="['email', 'public_profile']"
       class="btn btn-primary"
-      (loginOk)="loggedFacebook($event)"
+      (loginOk)="loginFacebook($event)"
       (loginError)="showError($event)"
     >
       <fa-icon [icon]="iconFacebook"></fa-icon>

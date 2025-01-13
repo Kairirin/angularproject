@@ -1,7 +1,6 @@
-import { Component, inject, signal } from "@angular/core";
+import { ChangeDetectorRef, Component, computed,  effect,  inject, signal } from "@angular/core";
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from "../../auth/services/auth.service";
-
 
 @Component({
     selector: 'top-menu',
@@ -11,12 +10,30 @@ import { AuthService } from "../../auth/services/auth.service";
     styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
-    token = signal(localStorage.getItem('token')); //TODO: CORREGIR QUE LO MUESTRE CUANDO TOCA Y CUANDO NO
     #authService = inject(AuthService);
+    logged = signal(this.#authService.getLogged());
+    #changeDetector = inject(ChangeDetectorRef);
+/*     logged = signal<boolean>(false); */
     #router = inject(Router);
+    showMenu = computed(() => {
+        return this.logged();
+    })
+
+    constructor() {
+        effect(() => {
+            this.#authService.isLogged() //TODO: No va bien
+            .pipe()
+            .subscribe({
+                next: (resp) => {
+                    this.logged.set(resp);
+                    this.#changeDetector.markForCheck();
+                }
+            })
+        })
+    }
 
     logout() {
-        this.#authService.logout();
+        this.#authService.logout(); 
         this.#router.navigate(['/auth/login']);
     }
 }

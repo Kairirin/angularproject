@@ -18,7 +18,7 @@
         <h4 id="email">
             <small class="text-muted">{{ user().email }}</small>
         </h4>
-        <!-- Añadir campo de modificar password que muestre 2 campos -->
+
         @if (user().me) {
         <div>
             <button class="btn btn-primary" id="editProfile" (click)="changeButton('profile')">
@@ -58,7 +58,7 @@
                     <div class="invalid-feedback">You must enter a valid email</div>
                     }
                 </div>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">Save changes</button>
                 <button type="button" class="btn btn-danger" (click)="changeButton('profile')">Cancel</button>
             </form>
         </div>
@@ -66,15 +66,22 @@
 
         @if (editPassword()) {
         <div class="col-9" id="passwordForm">
-            <form>
+            <form (ngSubmit)="updatePassword()" [formGroup]="passwordForm">
                 <div class="mb-3">
                     <label for="password">Password:</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                    <input type="password" class="form-control" formControlName="password" placeholder="Password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+                    @let password = passwordForm.get('password')!;
+                    @let password2 = passwordForm.get('password')!;
+                    @if (password.errors?.['required']) {
+                    <div class="invalid-feedback">You must enter a password</div>
+                    }
                     <label for="password2">Repeat password:</label>
-                    <input type="password" class="form-control" name="password2" id="password2"
-                        placeholder="Repeat password" />
+                    <input type="password" class="form-control" formControlName="password2" placeholder="Repeat password" [class]="{
+                        'is-valid': password2.touched && !passwordForm.errors?.['matchValues'],
+                        'is-invalid': password2.touched && passwordForm.errors?.['matchValues'],
+                      }" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid">Save changes</button>
                 <button type="button" class="btn btn-danger" (click)="changeButton('password')">Cancel</button>
             </form>
         </div>

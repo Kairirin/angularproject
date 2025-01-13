@@ -6,7 +6,7 @@ import { AuthService } from "../services/auth.service";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { from } from "rxjs";
 import { MyGeolocation } from "../../shared/my-geolocation";
-import { UserGoogle, UserLogin } from "../../shared/interfaces/user";
+import { UserFacebook, UserGoogle, UserLogin } from "../../shared/interfaces/user";
 import { GoogleLoginDirective } from "../google-login/google-login.directive";
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { FbLoginDirective } from "../facebook-login/fb-login.directive";
@@ -30,7 +30,7 @@ export class LoginComponent {
   loginForm = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required]
+      validators: [Validators.required, Validators.email]
     }),
     password: new FormControl('', {
       nonNullable: true,
@@ -71,12 +71,13 @@ export class LoginComponent {
     });
   }
 
-  loggedGoogle(resp: google.accounts.id.CredentialResponse) {
+  loginGoogle(resp: google.accounts.id.CredentialResponse) {
     const userGoogle: UserGoogle = {
       token: resp.credential,
       lat: this.userLogin.lat,
       lng: this.userLogin.lng
-    }
+    };
+
     console.log(resp.credential);
     this.#authService.loginGoogle(userGoogle)
     .pipe(takeUntilDestroyed(this.#destroyRef))
@@ -86,11 +87,19 @@ export class LoginComponent {
     }); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
   }
 
-  loggedFacebook(resp: fb.StatusResponse) {
-    // Envía esto a tu API
-/*     localStorage.setItem('token', resp.authResponse.accessToken!);
-    this.#router.navigate(['/events']); */ //TODO: ARREGLAR ESTO BIEN
-    console.log(resp.authResponse.accessToken);
+  loginFacebook(resp: fb.StatusResponse) {
+    const userFacebook: UserFacebook = {
+      token: resp.authResponse.accessToken!,
+      lat: this.userLogin.lat,
+      lng: this.userLogin.lng
+    };
+
+    this.#authService.loginFacebook(userFacebook)
+    .pipe(takeUntilDestroyed(this.#destroyRef))
+    .subscribe({
+      next: () => this.#router.navigate(['/events']),
+      error: () => alert("Login incorrecto") //TODO: Mostrar error en modal
+    });
   }
 
   showError(error: string) {

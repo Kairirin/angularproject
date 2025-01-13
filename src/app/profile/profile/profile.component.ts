@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { User, UserPasswordEdit, UserPhotoEdit, UserProfileEdit } from '../../shared/interfaces/user';
 import { OlMapDirective } from '../../shared/ol-maps/ol-map.directive';
@@ -9,10 +9,11 @@ import { ValidationClassesDirective } from '../../shared/directives/validation-c
 import { UsersService } from '../services/users.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { matchValues } from '../../shared/validators/match-values.Validator';
 
 @Component({
   selector: 'profile',
-  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, EncodeBase64Directive],
+  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, EncodeBase64Directive, ValidationClassesDirective],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -20,6 +21,7 @@ export class ProfileComponent {
   #title = inject(Title);
   #userService = inject(UsersService);
   #destroyRef = inject(DestroyRef);
+    #changeDetector = inject(ChangeDetectorRef);
   user = input.required<User>();
   editProfile = signal(false);
   editPassword = signal(false);
@@ -35,9 +37,16 @@ export class ProfileComponent {
     })
   })
 
-  userPassword: UserPasswordEdit = {
-    password: ""
-  }
+  passwordForm = new FormGroup({
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    password2: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    })
+  }, { validators: matchValues('password', 'password2') })
 
   constructor() {
     effect(() => {
@@ -75,6 +84,20 @@ export class ProfileComponent {
       })
   }
 
+  updatePassword() {
+    const userPassword: UserPasswordEdit = {
+      password: this.passwordForm.get("password")?.getRawValue()
+    };
+
+    this.#userService.savePassword(userPassword)
+    .pipe(takeUntilDestroyed(this.#destroyRef))
+    .subscribe(() => {
+      this.user().password = userPassword.password;
+      this.passwordForm.reset();
+      this.changeButton("password");
+    })
+  }
+
   changeAvatar(avatar: string) {
     const userPhoto: UserPhotoEdit = {
       avatar: avatar
@@ -83,7 +106,10 @@ export class ProfileComponent {
     this.#userService.saveAvatar(userPhoto)
     .pipe(takeUntilDestroyed(this.#destroyRef))
     .subscribe({ 
-      next: () => this.user().avatar = userPhoto.avatar,
+      next: () => {
+        this.user().avatar = userPhoto.avatar;
+        this.#changeDetector.markForCheck();
+      },
       error: (error) => console.log(error) 
   });
   }

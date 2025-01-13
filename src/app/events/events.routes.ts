@@ -20,6 +20,7 @@ export const eventsRoutes: Routes = [
   {
     path: ':id/edit',
     canActivate: [numericIdGuard],
+    canDeactivate: [leavePageGuard],
     resolve: {
       event: eventResolver,
     },

@@ -90,4 +90,8 @@ export class RegisterComponent {
         this.#router.navigate(['/auth/login']);
       });
   }
+
+  canDeactivate() {
+    return this.saved || this.registerForm.pristine || confirm('Are you sure? The changes will be lost...'); //TODO: Cambiar todos los alerts de la página
+  }
 }

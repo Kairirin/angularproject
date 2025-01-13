@@ -1,10 +1,11 @@
-import { Component, signal, inject, DestroyRef, effect, input } from "@angular/core";
+import { Component, signal, inject, DestroyRef, effect, input, computed } from "@angular/core";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { EventCardComponent } from "../event-card/event-card.component";
 import { MyEvent } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
 import { debounceTime, distinctUntilChanged } from "rxjs";
+import { UsersService } from "../../profile/services/users.service";
 
 
 @Component({
@@ -16,6 +17,7 @@ import { debounceTime, distinctUntilChanged } from "rxjs";
 })
 export class EventsPageComponent {
   #eventsService = inject(EventsService);
+  #usersService = inject(UsersService);
   #destroyRef = inject(DestroyRef);
   events = signal<MyEvent[]>([]);
   searchControl = new FormControl('');
@@ -25,18 +27,51 @@ export class EventsPageComponent {
       distinctUntilChanged(),
     ),
     { initialValue: '' }
-  )
+  ) //TODO: Intentar esto para logout
 
   order = signal("distance");
   page = signal(1);
   load = signal(false);
   creator = input<string>();
+  username = signal('');
   attending = input<string>();
+  info = computed(() =>{
+    let text = "Events ";
+    if(this.username()){
+      text += ` created by ${this.username()}, `
+    }
+    if (this.search()){
+      text += ` filtered by ${this.search()}, `;
+    }
+    return text += `ordered by ${this.order()}`
+  } );
+    
 
   constructor() {
     effect(() => {
       if (this.creator()) {
-        this.getEventsWithParams(this.creator()!); //TODO: Mejorar esto, pero funciona todo
+        this.#eventsService
+          .getEvents(this.search()!, this.order(), this.page(), this.creator()!)
+          .pipe(takeUntilDestroyed(this.#destroyRef))
+          .subscribe((resp) => {
+            if (this.page() === 1)
+              this.events.set(resp.events)
+            else
+              this.events.update((events) => [...events, ...resp.events])
+
+            if (resp.more) {
+              this.load.set(true);
+            }
+            else {
+              this.load.set(false);
+            }
+          }); //TODO: Mejorar esto, pero funciona todo
+
+          this.#usersService.getProfile(Number(this.creator()))
+            .pipe(takeUntilDestroyed(this.#destroyRef))
+            .subscribe((resp) => {
+              this.username.set(resp.name);
+            });
       }
       else if (this.attending()) {
         this.#eventsService
@@ -57,6 +92,8 @@ export class EventsPageComponent {
           });
       }
       else {
+        this.username.set('');
+        
         this.#eventsService
           .getEvents(this.search()!, this.order(), this.page())
           .pipe(takeUntilDestroyed(this.#destroyRef))
@@ -75,25 +112,6 @@ export class EventsPageComponent {
           });
       }
     });
-  }
-
-  getEventsWithParams(param: string) {
-    this.#eventsService
-      .getEvents(this.search()!, this.order(), this.page(), param)
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((resp) => {
-        if (this.page() === 1)
-          this.events.set(resp.events)
-        else
-          this.events.update((events) => [...events, ...resp.events])
-
-        if (resp.more) {
-          this.load.set(true);
-        }
-        else {
-          this.load.set(false);
-        }
-      });
   }
 
   changeOrder(type: string) {
