@@ -16,6 +16,13 @@ export interface UserLogin {
     lng?: number;
 }
 
+export interface UserGoogle {
+    token: string;
+    lat?: number;
+    lng?: number;
+}
+
+
 export interface UserProfileEdit {
     name: string;
     email: string;

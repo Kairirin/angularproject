@@ -6,7 +6,7 @@ import { AuthService } from "../services/auth.service";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { from } from "rxjs";
 import { MyGeolocation } from "../../shared/my-geolocation";
-import { UserLogin } from "../../shared/interfaces/user";
+import { UserGoogle, UserLogin } from "../../shared/interfaces/user";
 import { GoogleLoginDirective } from "../google-login/google-login.directive";
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { FbLoginDirective } from "../facebook-login/fb-login.directive";
@@ -72,9 +72,18 @@ export class LoginComponent {
   }
 
   loggedGoogle(resp: google.accounts.id.CredentialResponse) {
-    localStorage.setItem('token', resp.credential);
-    this.#router.navigate(['/events']); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
-    /* console.log(resp.credential); */
+    const userGoogle: UserGoogle = {
+      token: resp.credential,
+      lat: this.userLogin.lat,
+      lng: this.userLogin.lng
+    }
+    console.log(resp.credential);
+    this.#authService.loginGoogle(userGoogle)
+    .pipe(takeUntilDestroyed(this.#destroyRef))
+    .subscribe({
+      next: () => this.#router.navigate(['/events']),
+      error: () => alert("Login incorrecto") //TODO: Mostrar error en modal
+    }); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
   }
 
   loggedFacebook(resp: fb.StatusResponse) {

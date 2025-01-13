@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { User, UserLogin } from '../../shared/interfaces/user';
+import { User, UserGoogle, UserLogin } from '../../shared/interfaces/user';
 import { catchError, map, Observable, of } from 'rxjs';
 import {
   SingleUserResponse,
@@ -23,6 +23,16 @@ export class AuthService {
 
   login(user: UserLogin): Observable<TokenResponse> {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(
+      map((resp) => {
+        this.#logged = signal(true);
+        localStorage.setItem('token', resp.accessToken);
+        return resp;
+      })
+    );
+  }
+
+  loginGoogle(userGoogle: UserGoogle) : Observable<TokenResponse> {
+    return this.#http.post<TokenResponse>(`${this.#authUrl}/google`, userGoogle).pipe(
       map((resp) => {
         this.#logged = signal(true);
         localStorage.setItem('token', resp.accessToken);

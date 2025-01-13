@@ -8,10 +8,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { UsersService } from '../services/users.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
 
 @Component({
   selector: 'profile',
-  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective],
+  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, EncodeBase64Directive],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -36,10 +37,6 @@ export class ProfileComponent {
 
   userPassword: UserPasswordEdit = {
     password: ""
-  }
-
-  userPhoto: UserPhotoEdit = {
-    avatar: ""
   }
 
   constructor() {
@@ -76,5 +73,18 @@ export class ProfileComponent {
         this.user().email = userProfile.email;
         this.changeButton("profile");
       })
+  }
+
+  changeAvatar(avatar: string) {
+    const userPhoto: UserPhotoEdit = {
+      avatar: avatar
+    }
+
+    this.#userService.saveAvatar(userPhoto)
+    .pipe(takeUntilDestroyed(this.#destroyRef))
+    .subscribe({ 
+      next: () => this.user().avatar = userPhoto.avatar,
+      error: (error) => console.log(error) 
+  });
   }
 }
