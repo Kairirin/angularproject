@@ -84,7 +84,7 @@ export class LoginComponent {
     .subscribe({
       next: () => this.#router.navigate(['/events']),
       error: () => alert("Login incorrecto") //TODO: Mostrar error en modal
-    }); //TODO: ARREGLAR ESTO CON TODO LO DE PROFILE Y TAL
+    });
   }
 
   loginFacebook(resp: fb.StatusResponse) {

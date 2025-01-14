@@ -22,7 +22,6 @@ export class TopMenuComponent {
     constructor() {
         effect(() => {
             this.#authService.isLogged() //TODO: No va bien
-            .pipe()
             .subscribe({
                 next: (resp) => {
                     this.logged.set(resp);
