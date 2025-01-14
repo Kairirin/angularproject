@@ -1,5 +1,5 @@
 import { Component, DestroyRef, effect, inject } from "@angular/core";
-import { FormControl, FormGroup,ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
 import { AuthService } from "../services/auth.service";
@@ -12,18 +12,21 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { FbLoginDirective } from "../facebook-login/fb-login.directive";
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { Coordinates } from "../../shared/interfaces/coordinates";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 
 @Component({
-    selector: 'login',
-    standalone: true,
-    imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective, FbLoginDirective, FaIconComponent],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+  selector: 'login',
+  standalone: true,
+  imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective, FbLoginDirective, FaIconComponent],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 export class LoginComponent {
   #router = inject(Router);
   #authService = inject(AuthService);
   #destroyRef = inject(DestroyRef);
+  #modalService = inject(NgbModal);
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   iconFacebook = faFacebook;
 
@@ -45,7 +48,7 @@ export class LoginComponent {
     lng: 0
   }
 
-  constructor(){
+  constructor() {
     effect(() => {
       const coords: Coordinates = {
         latitude: this.actualGeolocation()?.latitude ?? 0,
@@ -58,17 +61,17 @@ export class LoginComponent {
       }
     });
   }
-  
-  login(){
+
+  login() {
     this.userLogin.email = this.loginForm.get('email')?.getRawValue();
     this.userLogin.password = this.loginForm.get('password')?.getRawValue();
-    
+
     this.#authService.login(this.userLogin)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe({
-      next: () => this.#router.navigate(['/events']),
-      error: () => alert("Login incorrecto")//TODO: Mostrar error en modal
-    });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: () => this.#router.navigate(['/events']),
+        error: () => this.showModal()
+      });
   }
 
   loginGoogle(resp: google.accounts.id.CredentialResponse) {
@@ -80,11 +83,11 @@ export class LoginComponent {
 
     console.log(resp.credential);
     this.#authService.loginGoogle(userGoogle)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe({
-      next: () => this.#router.navigate(['/events']),
-      error: () => alert("Login incorrecto") //TODO: Mostrar error en modal
-    });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: () => this.#router.navigate(['/events']),
+        error: () => this.showModal()
+      });
   }
 
   loginFacebook(resp: fb.StatusResponse) {
@@ -95,14 +98,20 @@ export class LoginComponent {
     };
 
     this.#authService.loginFacebook(userFacebook)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe({
-      next: () => this.#router.navigate(['/events']),
-      error: () => alert("Login incorrecto") //TODO: Mostrar error en modal
-    });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: () => this.#router.navigate(['/events']),
+        error: () => this.showModal()
+      });
   }
 
   showError(error: string) {
     console.error(error);
+  }
+
+  showModal() {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = 'Oopss...';
+    modalRef.componentInstance.body = 'Incorrect login. Try again';
   }
 }

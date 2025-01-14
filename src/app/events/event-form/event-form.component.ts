@@ -14,6 +14,8 @@ import { OlMarkerDirective } from "../../shared/ol-maps/ol-marker.directive";
 import { SearchResult } from "../../shared/ol-maps/search-result";
 import { MyGeolocation } from "../../shared/my-geolocation";
 import { from } from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 
 
 @Component({
@@ -25,15 +27,16 @@ import { from } from "rxjs";
 })
 export class EventFormComponent {
   #eventsService = inject(EventsService);
+  #modalService = inject(NgbModal);
   #router = inject(Router);
   saved = false;
   #destroyRef = inject(DestroyRef);
   #fb = inject(NonNullableFormBuilder);
 
   minDate = new Date().toISOString().slice(0, 10);
-  actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => [result.longitude, result.latitude])), {initialValue: [0, 0]});
+  actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => [result.longitude, result.latitude])), { initialValue: [0, 0] });
   coordinates = signal<[number, number]>([0, 0]);
-  
+
   eventForm = this.#fb.group({
     title: ['', [Validators.required, Validators.minLength(5), Validators.pattern('^[a-zA-Z][a-zA-Z ]*$')]],
     description: ['', [Validators.required]],
@@ -41,17 +44,17 @@ export class EventFormComponent {
     image: ['', [Validators.required]],
     date: ['', [Validators.required, minDateValidator(this.minDate)]]
   })
-  
+
   address = "";
   imgBase64 = '';
 
   constructor() {
     effect(() => {
-      this.coordinates.set([this.actualGeolocation()[0], this.actualGeolocation()[1]]); //TODO: Convertir en objeto con interfaz Coordinates
-    }); 
+      this.coordinates.set([this.actualGeolocation()[0], this.actualGeolocation()[1]]);
+    });
   }
 
-  addEvent() { //TODO: Comprobar que guarda bien el evento
+  addEvent() {
     const newEvent: MyEventInsert = {
       ...this.eventForm.getRawValue(),
       lat: this.coordinates()[1],
@@ -72,7 +75,14 @@ export class EventFormComponent {
     this.coordinates.set(result.coordinates);
     this.address = result.address;
   }
+
   canDeactivate() {
-    return this.saved || this.eventForm.pristine || confirm('Are you sure? The changes will be lost...'); //TODO: Cambiar todos los alerts de la página
+    if (this.saved || this.eventForm.pristine) {
+      this.#router.navigate(['/auth/login']);
+    }
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Leaving the page';
+    modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
+    return modalRef.result.catch(() => false);
   }
 }

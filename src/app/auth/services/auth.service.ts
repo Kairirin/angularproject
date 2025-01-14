@@ -15,8 +15,8 @@ export class AuthService {
   #logged: WritableSignal<boolean> = signal(false);
   #http = inject(HttpClient);
 
-  getLogged() :boolean {
-    return this.#logged();
+  getLogged(): boolean { 
+    return this.#logged(); 
   }
 
   register(user: User): Observable<User> {
@@ -28,7 +28,7 @@ export class AuthService {
   login(user: UserLogin): Observable<TokenResponse> {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(
       map((resp) => {
-        this.#logged = signal(true);
+        this.#logged.set(true);
         localStorage.setItem('token', resp.accessToken);
         return resp;
       })
@@ -38,7 +38,7 @@ export class AuthService {
   loginGoogle(userGoogle: UserGoogle) : Observable<TokenResponse> {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/google`, userGoogle).pipe(
       map((resp) => {
-        this.#logged = signal(true);
+        this.#logged.set(true);
         localStorage.setItem('token', resp.accessToken);
         return resp;
       })
@@ -48,7 +48,7 @@ export class AuthService {
   loginFacebook(userFacebook: UserFacebook) : Observable<TokenResponse> {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/facebook`, userFacebook).pipe(
       map((resp) => {
-        this.#logged = signal(true);
+        this.#logged.set(true);
         localStorage.setItem('token', resp.accessToken);
         return resp;
       })
@@ -61,12 +61,12 @@ export class AuthService {
     } else if (!this.#logged() && localStorage.getItem('token')) {
       return this.#http.get<Observable<boolean>>(`${this.#authUrl}/validate`).pipe(
         map(() => {
-          this.#logged = signal(true);
+          this.#logged.set(true);
           return true;
         }),
         catchError(() => {
+          this.#logged.set(false);
           localStorage.removeItem('token');
-          this.#logged = signal(false);
           return of(false);
         })
       );
@@ -75,7 +75,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    this.#logged = signal(false);
+    this.#logged.set(false);
+    localStorage.clear();
   }
 }

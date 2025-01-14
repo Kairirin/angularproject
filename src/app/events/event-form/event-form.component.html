@@ -1,18 +1,14 @@
 <form (ngSubmit)="addEvent()" [formGroup]="eventForm" class="mt-4">
   <div class="mb-3">
     <label for="title" class="form-label">Title</label>
-    <input 
-      type="text" 
-      class="form-control" 
-      formControlName="title"
+    <input type="text" class="form-control" formControlName="title"
       [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
     @let titleErrors = eventForm.get('title')?.errors;
     @if(titleErrors?.['required']) {
     <div class="invalid-feedback">Title cannot be empty</div>
     } @if(titleErrors?.['minlength']) {
     <div class="invalid-feedback">
-      You must enter at least
-      {{ titleErrors?.['minlength'].requiredLength - titleErrors?.['minlength'].actualLength }}
+      You must enter at least {{ titleErrors?.['minlength'].requiredLength - titleErrors?.['minlength'].actualLength }}
       characters more
     </div>
     } @if(titleErrors?.['pattern']){
@@ -23,10 +19,7 @@
   </div>
   <div class="mb-3">
     <label for="date" class="form-label">Date</label>
-    <input 
-      type="date" 
-      class="form-control" 
-      formControlName="date"
+    <input type="date" class="form-control" formControlName="date"
       [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let dateErrors = eventForm.get('date')?.errors;
     @if(dateErrors?.['required']) {
@@ -37,11 +30,8 @@
   </div>
   <div class="mb-3">
     <label for="description" class="form-label">Description</label>
-    <textarea 
-      class="form-control" 
-      formControlName="description"
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" 
-      rows="3">
+    <textarea class="form-control" formControlName="description"
+      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" rows="3">
     </textarea>
     @let descErrors = eventForm.get('description')?.errors;
     @if(descErrors?.['required']) {
@@ -50,12 +40,8 @@
   </div>
   <div class="mb-3">
     <label for="price" class="form-label">Price (in €)</label>
-    <input 
-      type="number" 
-      class="form-control" 
-      formControlName="price"
-      step="0.01" 
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}"/>
+    <input type="number" class="form-control" formControlName="price" step="0.01"
+      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let priceErrors = eventForm.get('price')?.errors;
     @if(priceErrors?.['required']) {
     <div class="invalid-feedback">Price is required</div>
@@ -65,21 +51,15 @@
   </div>
   <div class="mb-3">
     <label for="image" class="form-label">Image</label>
-    <input 
-      type="file" 
-      class="form-control" 
-      formControlName="image" 
-      #fileImage 
-      encodeBase64 
-      (encoded)="imgBase64 = $event" 
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}"/>
+    <input type="file" class="form-control" formControlName="image" #fileImage encodeBase64
+      (encoded)="imgBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let imageErrors = eventForm.get('image')?.errors;
     @if(imageErrors?.['required']) {
     <div class="invalid-feedback">An image is required</div>
     }
   </div>
   @if(imgBase64) {
-  <img [src]="imgBase64" [alt]="eventForm.get('title')" id="imgPreview" class="img-thumbnail mb-3"/>
+  <img [src]="imgBase64" [alt]="eventForm.get('title')" id="imgPreview" class="img-thumbnail mb-3" />
   }
   <div class="card mt-4">
     <div id="map">

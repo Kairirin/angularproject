@@ -1,5 +1,5 @@
 <div class="mt-4">
-  <event-card class="col" [event]='event()' (deleted)="deleteEvent()" (newAttendance)="getAttendance()"></event-card>
+  <event-card class="col" [event]='event()' (deleted)="goBack()" (newAttendance)="getAttendance()"></event-card>
 </div>
 <div class="card mt-4">
   <div class="card-header bg-success text-white" id="address">{{ this.event().address }}</div>
@@ -36,9 +36,11 @@
       <div class="row">
         <div class="col-auto text-center user-info">
           <a class="avatar" [routerLink]="['/profile', comment.user.id]">
-            <img class=" rounded-circle" style="width: 40px;" src="{{ comment.user.avatar }}" alt="{{ comment.user.name }}'s profile" />
+            <img class=" rounded-circle" style="width: 40px;" src="{{ comment.user.avatar }}"
+              alt="{{ comment.user.name }}'s profile" />
           </a>
-          <div><small><a class="text-decoration-none name" [routerLink]="['/profile', comment.user.id]">{{ comment.user.name }}</a></small></div>
+          <div><small><a class="text-decoration-none name" [routerLink]="['/profile', comment.user.id]">{{
+                comment.user.name }}</a></small></div>
           <div><small class="date">{{ comment.date | date: 'dd/MM/yyyy h:mm a' }}</small></div>
         </div>
         <div class="col comment">
@@ -46,7 +48,7 @@
         </div>
       </div>
     </li>
-  }
+    }
   </ul>
 </div>
 

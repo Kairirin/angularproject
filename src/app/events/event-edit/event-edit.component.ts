@@ -13,6 +13,8 @@ import { minDateValidator } from '../../shared/validators/min-date.validator';
 import { MyEvent, MyEventInsert } from '../interfaces/my-event';
 import { EventsService } from '../services/events.service';
 import { Title } from '@angular/platform-browser';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'event-edit',
@@ -22,11 +24,12 @@ import { Title } from '@angular/platform-browser';
 })
 export class EventEditComponent {
   #eventsService = inject(EventsService);
+  #modalService = inject(NgbModal);
+  #destroyRef = inject(DestroyRef);
+  #fb = inject(NonNullableFormBuilder);
   #router = inject(Router);
   #title = inject(Title);
   saved = false;
-  #destroyRef = inject(DestroyRef);
-  #fb = inject(NonNullableFormBuilder);
 
   event = input.required<MyEvent>();
 
@@ -54,12 +57,12 @@ export class EventEditComponent {
         this.editForm.get('date')!.setValue((this.event().date).split(" ")[0]);
         this.imgBase64 = this.event().image;
         this.address = this.event().address;
-        this.coordinates.set([this.event().lng, this.event().lat]); //TODO: Convertir en objeto con interfaz Coordinates
+        this.coordinates.set([this.event().lng, this.event().lat]);
       }
     }); 
   }
 
-  editEvent() { //TODO: Comprobar que guarda bien el evento
+  editEvent() {
     const newEvent: MyEventInsert = {
       ...this.editForm.getRawValue(),
       lat: this.coordinates()[1],
@@ -67,8 +70,6 @@ export class EventEditComponent {
       address: this.address,
       image: this.imgBase64
     };
-
-    console.log(newEvent);
 
     this.#eventsService.editEvent(newEvent, this.event().id)
       .pipe(takeUntilDestroyed(this.#destroyRef))
@@ -82,7 +83,14 @@ export class EventEditComponent {
     this.coordinates.set(result.coordinates);
     this.address = result.address;
   }
+
   canDeactivate() {
-    return this.saved || this.editForm.pristine || confirm('Are you sure? The changes will be lost...'); //TODO: Cambiar todos los alerts de la página
+    if (this.saved || this.editForm.pristine) {
+      this.#router.navigate(['/auth/login']);
+    }
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Leaving the page';
+    modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
+    return modalRef.result.catch(() => false);
   }
 }

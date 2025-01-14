@@ -15,7 +15,9 @@
       <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" [formControl]="searchControl">
     </form>
   </div>
-  <div><p>{{ info() }}</p></div>
+  <div>
+    <p>{{ info() }}</p>
+  </div>
 </nav>
 
 <div id="eventsContainer" class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
@@ -25,5 +27,5 @@
 </div>
 
 @if (load()){
-  <div class="mb-4"><button (click)="loadMore()" class="btn btn-primary">Load More events</button></div>
+<div class="mb-4"><button (click)="loadMore()" class="btn btn-primary">Load More events</button></div>
 }

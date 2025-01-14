@@ -1,10 +1,12 @@
 import { DatePipe, NgClass } from "@angular/common";
-import { Component, input, output, inject, DestroyRef, ChangeDetectorRef } from "@angular/core";
+import { Component, input, output, inject, DestroyRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { IntlCurrencyPipe } from "../../shared/pipes/intl-currency.pipe";
 import { MyEvent } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 
 @Component({
   selector: 'event-card',
@@ -19,57 +21,57 @@ export class EventCardComponent {
   newAttendance = output<void>();
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
-  #changeDetector = inject(ChangeDetectorRef);
+  #modalService = inject(NgbModal);
 
-    attendEvent() {
-      const attending = this.event().attend;
-      console.log(this.event());
-      if (!this.event().attend) {
-        this.event().attend = true;
-        this.event().numAttend++;
+  attendEvent() {
+    const attending = this.event().attend;
+    if (!this.event().attend) {
+      this.event().attend = true;
+      this.event().numAttend++;
 
-        this.#eventsService.postAttend(this.event().id)
-          .pipe(takeUntilDestroyed(this.#destroyRef))
-          .subscribe({
-            next: () => {
-              console.log("Bien"); //TODO: Borrar todos los console.log
-              this.newAttendance.emit();
-            },
-            error: () => {
-              console.log("Mal");
-              this.event().attend = attending;
-              this.#changeDetector.markForCheck(); //TODO: No sé si hace falta
-            },
-          });
-      }
-      else {
-        this.event().attend = false;
-        this.event().numAttend--;
-
-        this.#eventsService.deleteAttend(this.event().id)
+      this.#eventsService.postAttend(this.event().id)
         .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe({
           next: () => {
-            console.log("Bien"); 
             this.newAttendance.emit();
           },
           error: () => {
-            console.log("Mal");
             this.event().attend = attending;
-            this.#changeDetector.markForCheck();
           },
         });
-      }
     }
+    else {
+      this.event().attend = false;
+      this.event().numAttend--;
 
-    //TODO: Falta edit
+      this.#eventsService.deleteAttend(this.event().id)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe({
+          next: () => {
+            this.newAttendance.emit();
+          },
+          error: () => {
+            this.event().attend = attending;
+          },
+        });
+    }
+  }
 
   deleteEvent() {
-    if (confirm('Are you sure you want to delete?')) //TODO: ngBootstrap o ngx-sweetalert2
-      this.#eventsService.deleteEvent(this.event().id!)
-        .pipe(takeUntilDestroyed(this.#destroyRef))
-        .subscribe(() => {
-          this.deleted.emit();
-        })
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Are you sure?';
+    modalRef.componentInstance.body = 'You are going to delete this event';
+
+    modalRef.result.then((result) => {
+      if(result){
+        this.#eventsService.deleteEvent(this.event().id!)
+          .pipe(takeUntilDestroyed(this.#destroyRef))
+          .subscribe(() => {
+            this.deleted.emit();
+          })
+      }
+      else
+        return;
+    });
   }
 }

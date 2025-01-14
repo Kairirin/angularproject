@@ -10,6 +10,8 @@ import { UsersService } from '../services/users.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
 import { matchValues } from '../../shared/validators/match-values.Validator';
+import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'profile',
@@ -21,7 +23,8 @@ export class ProfileComponent {
   #title = inject(Title);
   #userService = inject(UsersService);
   #destroyRef = inject(DestroyRef);
-    #changeDetector = inject(ChangeDetectorRef);
+  #modalService = inject(NgbModal);
+  #changeDetector = inject(ChangeDetectorRef);
   user = input.required<User>();
   editProfile = signal(false);
   editPassword = signal(false);
@@ -80,6 +83,7 @@ export class ProfileComponent {
       .subscribe(() => {
         this.user().name = userProfile.name;
         this.user().email = userProfile.email;
+        this.showModal("Profile updated");
         this.changeButton("profile");
       })
   }
@@ -90,12 +94,13 @@ export class ProfileComponent {
     };
 
     this.#userService.savePassword(userPassword)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe(() => {
-      this.user().password = userPassword.password;
-      this.passwordForm.reset();
-      this.changeButton("password");
-    })
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => {
+        this.user().password = userPassword.password;
+        this.showModal("Password updated");
+        this.passwordForm.reset();
+        this.changeButton("password");
+      })
   }
 
   changeAvatar(avatar: string) {
@@ -104,13 +109,18 @@ export class ProfileComponent {
     }
 
     this.#userService.saveAvatar(userPhoto)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe({ 
-      next: () => {
-        this.user().avatar = userPhoto.avatar;
-        this.#changeDetector.markForCheck();
-      },
-      error: (error) => console.log(error) 
-  });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: () => {
+          this.user().avatar = userPhoto.avatar;
+          this.#changeDetector.markForCheck();
+        }
+      });
+  }
+
+  showModal(body: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = 'Done!';
+    modalRef.componentInstance.body = body;
   }
 }

@@ -1,21 +1,16 @@
-import { Component,
-  DestroyRef,
-  effect,
-  inject,
-  input,
-  signal
-} from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Comment, MyEvent, NewComment } from '../interfaces/my-event';
+import { MyEvent, NewComment } from '../interfaces/my-event';
 import { OlMapDirective } from '../../shared/ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../shared/ol-maps/ol-marker.directive';
-import { User } from '../../shared/interfaces/user';
 import { EventsService } from '../services/events.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
 
 @Component({
   selector: 'event-detail',
@@ -25,13 +20,24 @@ import { DatePipe } from '@angular/common';
   styleUrl: './event-detail.component.css'
 })
 export class EventDetailComponent {
-  event = input.required<MyEvent>();
-  attendees = signal<User[]>([]);
-  comments = signal<Comment[]>([]);
   #router = inject(Router);
   #title = inject(Title);
   #eventsService = inject(EventsService);
+  #modalService = inject(NgbModal);
   #destroyRef = inject(DestroyRef);
+  event = input.required<MyEvent>();
+  newAttendance = signal<boolean>(true);
+  attendResource = rxResource({
+    request: () => this.event().id,
+    loader: ({request: id}) => this.#eventsService.getAttendees(id)
+  })
+  attendees = computed(() => this.attendResource.value());
+
+  commentResource = rxResource({
+    request: () => this.event().id,
+    loader: ({request: id}) => this.#eventsService.getComments(id)
+  })
+  comments = computed(() => this.commentResource.value());
 
   commentForm = new FormGroup({
     comment: new FormControl('', {
@@ -42,25 +48,16 @@ export class EventDetailComponent {
 
   constructor() {
     effect(() => {
-      if (this.event()) {
-        this.#title.setTitle(this.event().title + ' | Angular Events');
-        this.getAttendance();
-
-        this.#eventsService.getComments(this.event().id)
-          .pipe(takeUntilDestroyed(this.#destroyRef))
-          .subscribe((result) => {
-            this.comments.set(result);
-          });
-        }
+      this.#title.setTitle(this.event().title + ' | Angular Events');
     });
   }
 
   getAttendance() {
     this.#eventsService.getAttendees(this.event().id)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe((result) => {
-      this.attendees.set(result);
-    });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe((result) => {
+        this.attendResource.set(result);
+      });
   }
 
   addComment() {
@@ -69,22 +66,22 @@ export class EventDetailComponent {
     }
 
     this.#eventsService.addComment(this.event().id, newComment)
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe({
-      next: (result) => {
-        console.log("Bien"); 
-        this.commentForm.reset(); //TODO: Comprobar que resetea formulario
-        this.comments.update((com) => [...com, result])
-      },
-      error: () => {
-        console.log("Mal"); //TODO: Mensaje de no puedes comentar eventos a los que no asistes
-      },
-    });
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.commentForm.reset();
+          const com = this.comments();
+          this.commentResource.set([...com!, result])
+        },
+        error: () => {
+          const modalRef = this.#modalService.open(AlertModalComponent);
+          modalRef.componentInstance.title = 'Wait a minute!';
+          modalRef.componentInstance.body = 'You can not comment on events that you are not attending!';
+          this.commentForm.reset();
+        },
+      });
   }
 
-  deleteEvent() {
-    this.#router.navigate(['/events']);
-  }
   goBack() {
     this.#router.navigate(['/events']);
   }

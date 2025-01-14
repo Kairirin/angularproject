@@ -1,6 +1,6 @@
 import { Component, inject, DestroyRef, effect } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
 import { matchValues } from "../../shared/validators/match-values.Validator";
@@ -10,23 +10,26 @@ import { MyGeolocation } from "../../shared/my-geolocation";
 import { User } from "../../shared/interfaces/user";
 import { AuthService } from "../services/auth.service";
 import { Coordinates } from "../../shared/interfaces/coordinates";
-import { JsonPipe } from "@angular/common";
+import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 
 
 @Component({
     selector: 'register',
     standalone: true,
-    imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, JsonPipe],
+    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements CanComponentDeactivate {
   #authService = inject(AuthService);
+  #modalService = inject(NgbModal);
   #router = inject(Router);
-  saved = false;
   #destroyRef = inject(DestroyRef);
-  imageBase64 = '';
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
+  saved = false;
+  imageBase64 = '';
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -40,9 +43,9 @@ export class RegisterComponent {
       }),
       email2: new FormControl('', { 
         nonNullable: true,
-        validators: [Validators.required] 
+        validators: [Validators.required, Validators.email] 
       }),
-    }, { validators: matchValues('email', 'email2') }), //TODO: No hace bien la validación del segundo email
+    }, { validators: matchValues('email', 'email2') }),
     password: new FormControl('', { 
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(4)] 
@@ -92,6 +95,12 @@ export class RegisterComponent {
   }
 
   canDeactivate() {
-    return this.saved || this.registerForm.pristine || confirm('Are you sure? The changes will be lost...'); //TODO: Cambiar todos los alerts de la página
+    if (this.saved || this.registerForm.pristine) {
+      this.#router.navigate(['/auth/login']);
+    }
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Leaving the page';
+    modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
+    return modalRef.result.catch(() => false);
   }
 }

@@ -3,65 +3,74 @@
 
     <div class="mb-3">
         <label for="name">Name:</label>
-        <input type="text" class="form-control" formControlName="name" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+        <input type="text" class="form-control" formControlName="name"
+            [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let nameErrors = registerForm.get('name')?.errors;
         @if (nameErrors?.['required']) {
-            <div class="invalid-feedback">You must enter a username</div>
+        <div class="invalid-feedback">You must enter a username</div>
         }
     </div>
     <ng-container formGroupName="emailGroup">
-    @let emailsGroup = registerForm.get('emailGroup')!;
+        @let emailsGroup = registerForm.get('emailGroup')!;
         <div class="mb-3">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
-             @let email = emailsGroup.get('email')!;
-             @if (email.errors?.['required']) {
-                <div class="invalid-feedback">You must enter an email with the correct format</div>
+            <input type="email" class="form-control" formControlName="email"
+                [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+            @let email = emailsGroup.get('email')!;
+            @if (email.errors?.['required'] || email.errors?.['email']) {
+            <div class="invalid-feedback">You must enter an email with the correct format</div>
             }
         </div>
         <div class="mb-3">
             @let emailConfirm = emailsGroup.get('email2')!;
             <label for="email2">Repeat Email:</label>
-            <input type="email" class="form-control" formControlName="email2" 
-            [class]="{
-                'is-valid': emailConfirm.touched && !emailsGroup.errors?.['matchValues'],
+            <input type="email" class="form-control" formControlName="email2" [class]="{
+                'is-valid': email.value && emailConfirm.touched && !emailsGroup.errors?.['matchValues'],
                 'is-invalid': emailConfirm.touched && emailsGroup.errors?.['matchValues'],
-              }"/>
+              }" />
+            @if (emailsGroup.errors?.['matchValues']) {
+            <div class="invalid-feedback">The emails must be equal.</div>
+            }
         </div>
-         <p>{{ emailsGroup.value | json }}</p> <!--TODO: QUITAR-->
     </ng-container>
     <div class="mb-3">
         <label for="password">Password:</label>
-        <input type="password" class="form-control" formControlName="password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}"/>
+        <input type="password" class="form-control" formControlName="password"
+            [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let pswErrors = registerForm.get('password')?.errors;
         @if (pswErrors?.['required']) {
-            <div class="invalid-feedback">You must enter a password</div>
+        <div class="invalid-feedback">You must enter a password</div>
+        }
+        @if (pswErrors?.['minlength']) {
+        <div class="invalid-feedback">Your password is too short, it must be at least 4 characters long.</div>
         }
     </div>
     <div class="form-row">
         <div class="mb-3 col">
             <label for="lat">Latitude:</label>
-            <input type="text" class="form-control" formControlName="lat" placeholder="Geolocating..." readonly="readonly"/>
+            <input type="text" class="form-control" formControlName="lat" placeholder="Geolocating..."
+                readonly="readonly" />
         </div>
         <div class="mb-3 col">
             <label for="lng">Longitude:</label>
-            <input type="text" class="form-control" formControlName="lng"  placeholder="Geolocating..." readonly="readonly"/>
+            <input type="text" class="form-control" formControlName="lng" placeholder="Geolocating..."
+                readonly="readonly" />
         </div>
     </div>
     <div class="mb-3">
         <label for="avatar">Avatar image</label>
-        <input type="file" class="form-control" formControlName="avatar" #fileImage 
-      encodeBase64 (encoded) = "imageBase64 = $event"  [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}"/>
-    @let avatarErrors = registerForm.get("avatar")?.errors;
-    @if (avatarErrors?.['required']) {
+        <input type="file" class="form-control" formControlName="avatar" #fileImage encodeBase64
+            (encoded)="imageBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+        @let avatarErrors = registerForm.get("avatar")?.errors;
+        @if (avatarErrors?.['required']) {
         <div class="invalid-feedback">An avatar is required</div>
-    }
+        }
     </div>
     @if (imageBase64) {
-        <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3"/>
+    <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3" />
     }
     <div>
-    <a class="btn btn-secondary" href="auth/login" (click)="canDeactivate()" role="button">Go back</a>
-    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create account</button>
+        <a [routerLink]="['/auth/login']" class="btn btn-secondary">Go back</a>
+        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create account</button>
     </div>
 </form>

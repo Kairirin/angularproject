@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, computed,  effect,  inject, signal } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from "../../auth/services/auth.service";
+import { rxResource } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'top-menu',
@@ -11,28 +12,15 @@ import { AuthService } from "../../auth/services/auth.service";
 })
 export class TopMenuComponent {
     #authService = inject(AuthService);
-    logged = signal(this.#authService.getLogged());
-    #changeDetector = inject(ChangeDetectorRef);
-/*     logged = signal<boolean>(false); */
     #router = inject(Router);
-    showMenu = computed(() => {
-        return this.logged();
-    })
-
-    constructor() {
-        effect(() => {
-            this.#authService.isLogged() //TODO: No va bien
-            .subscribe({
-                next: (resp) => {
-                    this.logged.set(resp);
-                    this.#changeDetector.markForCheck();
-                }
-            })
-        })
-    }
+    loggedResource = rxResource({
+        request: () => this.#authService.getLogged(),
+        loader: () => this.#authService.isLogged()
+      });
+    showMenu = computed(() => this.loggedResource.value());
 
     logout() {
-        this.#authService.logout(); 
+        this.#authService.logout();
         this.#router.navigate(['/auth/login']);
     }
 }
