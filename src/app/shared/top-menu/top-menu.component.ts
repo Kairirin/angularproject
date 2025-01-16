@@ -13,11 +13,12 @@ import { rxResource } from "@angular/core/rxjs-interop";
 export class TopMenuComponent {
     #authService = inject(AuthService);
     #router = inject(Router);
-    loggedResource = rxResource({
+    showMenu = computed(() => this.#authService.getLogged()());
+/*     loggedResource = rxResource({
         request: () => this.#authService.getLogged(),
         loader: () => this.#authService.isLogged()
       });
-    showMenu = computed(() => this.loggedResource.value());
+    showMenu = computed(() => this.loggedResource.value()); */
 
     logout() {
         this.#authService.logout();

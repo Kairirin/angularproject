@@ -13,6 +13,7 @@ import { Coordinates } from "../../shared/interfaces/coordinates";
 import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
+import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 
 
 @Component({
@@ -54,11 +55,11 @@ export class RegisterComponent implements CanComponentDeactivate {
       nonNullable: true,
       validators: [Validators.required] 
     }),
-    lat:  new FormControl(0, { 
+    lat: new FormControl(0, { 
       nonNullable: true,
       validators: [Validators.required] 
     }),
-    lng:  new FormControl(0, { 
+    lng: new FormControl(0, { 
       nonNullable: true,
       validators: [Validators.required] 
     }),
@@ -88,9 +89,12 @@ export class RegisterComponent implements CanComponentDeactivate {
 
     this.#authService.register(newUser)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.saved = true;
-        this.#router.navigate(['/auth/login']);
+      .subscribe({
+        next: () => {
+          this.saved = true;
+          this.#router.navigate(['/auth/login']);
+        },
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -102,5 +106,11 @@ export class RegisterComponent implements CanComponentDeactivate {
     modalRef.componentInstance.title = 'Leaving the page';
     modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
     return modalRef.result.catch(() => false);
+  }
+
+  showModal(message: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = 'Oopss... Incorrect login';
+    modalRef.componentInstance.body = message;
   }
 }
