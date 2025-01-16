@@ -19,10 +19,10 @@ export class AuthService {
     return this.#logged.asReadonly(); 
   }
 
-  register(user: User): Observable<User> {
+  register(user: User): Observable<string> {
     return this.#http
-      .post<SingleUserResponse>(`${this.#authUrl}/register`, user)
-      .pipe(map((resp) => resp.user));
+      .post<string>(`${this.#authUrl}/register`, user)
+      .pipe(map((resp) => resp));
   }
 
   login(user: UserLogin): Observable<TokenResponse> {

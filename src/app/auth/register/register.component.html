@@ -71,9 +71,9 @@
     }
     <div>
         <a [routerLink]="['/auth/login']" class="btn btn-secondary">Go back</a>
-        <load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="registerForm.invalid">
+<!--         <load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="registerForm.invalid">
         Create account
-        </load-button>
-<!--         <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create account</button> -->
+        </load-button> -->
+        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create account</button>
     </div>
 </form>

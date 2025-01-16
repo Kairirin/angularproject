@@ -15,12 +15,6 @@ export class TopMenuComponent {
     #router = inject(Router);
     showMenu = computed(() => this.#authService.getLogged()());
 
-/*     loggedResource = rxResource({
-        request: () => this.#authService.getLogged(),
-        loader: () => this.#authService.isLogged()
-      });
-    showMenu = computed(() => this.loggedResource.value()); */
-
     logout() {
         this.#authService.logout();
         this.#router.navigate(['/auth/login']);

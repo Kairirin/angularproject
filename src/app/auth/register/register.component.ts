@@ -19,7 +19,7 @@ import { LoadButtonComponent } from "../../shared/load-button/load-button.compon
 @Component({
     selector: 'register',
     standalone: true,
-    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, LoadButtonComponent],
+    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective/* , LoadButtonComponent */],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -87,6 +87,8 @@ export class RegisterComponent implements CanComponentDeactivate {
       email: emailGroup['email'],
       avatar: this.imageBase64
     };
+
+    console.log("hola");
 
     this.#authService.register(newUser)
       .pipe(takeUntilDestroyed(this.#destroyRef))
