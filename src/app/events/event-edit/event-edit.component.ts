@@ -15,10 +15,11 @@ import { EventsService } from '../services/events.service';
 import { Title } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { LoadButtonComponent } from '../../shared/load-button/load-button.component';
 
 @Component({
   selector: 'event-edit',
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective],
+  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent],
   templateUrl: './event-edit.component.html',
   styleUrl: './event-edit.component.css'
 })
@@ -29,6 +30,7 @@ export class EventEditComponent {
   #fb = inject(NonNullableFormBuilder);
   #router = inject(Router);
   #title = inject(Title);
+  loading = signal(false);
   saved = false;
 
   event = input.required<MyEvent>();

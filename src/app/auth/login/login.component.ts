@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject } from "@angular/core";
+import { Component, DestroyRef, effect, inject, signal } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
@@ -14,11 +14,12 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { Coordinates } from "../../shared/interfaces/coordinates";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
+import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective, FbLoginDirective, FaIconComponent],
+  imports: [ReactiveFormsModule, ValidationClassesDirective, GoogleLoginDirective, FbLoginDirective, FaIconComponent, LoadButtonComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -27,6 +28,7 @@ export class LoginComponent {
   #authService = inject(AuthService);
   #destroyRef = inject(DestroyRef);
   #modalService = inject(NgbModal);
+  loading = signal(false);
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   iconFacebook = faFacebook;
 
@@ -113,5 +115,6 @@ export class LoginComponent {
     const modalRef = this.#modalService.open(AlertModalComponent);
     modalRef.componentInstance.title = 'Oopss...';
     modalRef.componentInstance.body = 'Incorrect login. Try again';
+    this.loading.set(false);
   }
 }

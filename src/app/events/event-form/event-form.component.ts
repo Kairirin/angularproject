@@ -16,12 +16,13 @@ import { MyGeolocation } from "../../shared/my-geolocation";
 import { from } from "rxjs";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
+import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 
 
 @Component({
   selector: 'event-form',
   standalone: true,
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective],
+  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
 })
@@ -32,6 +33,7 @@ export class EventFormComponent {
   saved = false;
   #destroyRef = inject(DestroyRef);
   #fb = inject(NonNullableFormBuilder);
+  loading = signal(false);
 
   minDate = new Date().toISOString().slice(0, 10);
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => [result.longitude, result.latitude])), { initialValue: [0, 0] });

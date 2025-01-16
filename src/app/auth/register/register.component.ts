@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, effect } from "@angular/core";
+import { Component, inject, DestroyRef, effect, signal } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
@@ -13,12 +13,13 @@ import { Coordinates } from "../../shared/interfaces/coordinates";
 import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
+import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 
 
 @Component({
     selector: 'register',
     standalone: true,
-    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective],
+    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, LoadButtonComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -30,6 +31,7 @@ export class RegisterComponent implements CanComponentDeactivate {
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   saved = false;
   imageBase64 = '';
+  loading = signal(false);
 
   registerForm = new FormGroup({
     name: new FormControl('', {
