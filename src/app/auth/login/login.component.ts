@@ -72,7 +72,7 @@ export class LoginComponent {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: () => this.#router.navigate(['/events']),
-        error: () => this.showModal()
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -88,7 +88,7 @@ export class LoginComponent {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: () => this.#router.navigate(['/events']),
-        error: () => this.showModal()
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -103,7 +103,7 @@ export class LoginComponent {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: () => this.#router.navigate(['/events']),
-        error: () => this.showModal()
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -111,10 +111,10 @@ export class LoginComponent {
     console.error(error);
   }
 
-  showModal() {
+  showModal(message: string) {
     const modalRef = this.#modalService.open(AlertModalComponent);
-    modalRef.componentInstance.title = 'Oopss...';
-    modalRef.componentInstance.body = 'Incorrect login. Try again';
+    modalRef.componentInstance.title = 'Oopss... Incorrect login';
+    modalRef.componentInstance.body = message;
     this.loading.set(false);
   }
 }

@@ -13,15 +13,16 @@ import { Coordinates } from "../../shared/interfaces/coordinates";
 import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
-import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
+/* import { LoadButtonComponent } from "../../shared/load-button/load-button.component"; */
+import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 
 
 @Component({
-    selector: 'register',
-    standalone: true,
-    imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective/* , LoadButtonComponent */],
-    templateUrl: './register.component.html',
-    styleUrl: './register.component.css'
+  selector: 'register',
+  standalone: true,
+  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective/* , LoadButtonComponent */],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
 })
 export class RegisterComponent implements CanComponentDeactivate {
   #authService = inject(AuthService);
@@ -31,7 +32,7 @@ export class RegisterComponent implements CanComponentDeactivate {
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   saved = false;
   imageBase64 = '';
-  loading = signal(false);
+/*   loading = signal(false); */
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -39,30 +40,30 @@ export class RegisterComponent implements CanComponentDeactivate {
       validators: [Validators.required],
     }),
     emailGroup: new FormGroup({
-      email: new FormControl('', { 
+      email: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.email] 
+        validators: [Validators.required, Validators.email]
       }),
-      email2: new FormControl('', { 
+      email2: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.email] 
+        validators: [Validators.required, Validators.email]
       }),
     }, { validators: matchValues('email', 'email2') }),
-    password: new FormControl('', { 
+    password: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(4)] 
+      validators: [Validators.required, Validators.minLength(4)]
     }),
-    avatar: new FormControl('', { 
+    avatar: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required] 
+      validators: [Validators.required]
     }),
-    lat:  new FormControl(0, { 
+    lat: new FormControl(0, {
       nonNullable: true,
-      validators: [Validators.required] 
+      validators: [Validators.required]
     }),
-    lng:  new FormControl(0, { 
+    lng: new FormControl(0, {
       nonNullable: true,
-      validators: [Validators.required] 
+      validators: [Validators.required]
     }),
   })
 
@@ -71,7 +72,7 @@ export class RegisterComponent implements CanComponentDeactivate {
       const coords: Coordinates = {
         latitude: this.actualGeolocation()?.latitude ?? 0,
         longitude: this.actualGeolocation()?.longitude ?? 0
-      } 
+      }
 
       if (coords) {
         this.registerForm.get('lat')!.setValue(coords.latitude);
@@ -88,13 +89,14 @@ export class RegisterComponent implements CanComponentDeactivate {
       avatar: this.imageBase64
     };
 
-    console.log("hola");
-
     this.#authService.register(newUser)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.saved = true;
-        this.#router.navigate(['/auth/login']);
+      .subscribe({
+        next: () => {
+          this.saved = true;
+          this.#router.navigate(['/auth/login']);
+        },
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -106,5 +108,12 @@ export class RegisterComponent implements CanComponentDeactivate {
     modalRef.componentInstance.title = 'Leaving the page';
     modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
     return modalRef.result.catch(() => false);
+  }
+
+  showModal(message: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = 'Oopss... Incorrect login';
+    modalRef.componentInstance.body = message;
+/*     this.loading.set(false); */
   }
 }

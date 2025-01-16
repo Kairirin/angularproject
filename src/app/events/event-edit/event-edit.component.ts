@@ -15,11 +15,12 @@ import { EventsService } from '../services/events.service';
 import { Title } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
-import { LoadButtonComponent } from '../../shared/load-button/load-button.component';
+/* import { LoadButtonComponent } from '../../shared/load-button/load-button.component'; */
+import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
 
 @Component({
   selector: 'event-edit',
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent],
+  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective/* , LoadButtonComponent */],
   templateUrl: './event-edit.component.html',
   styleUrl: './event-edit.component.css'
 })
@@ -30,7 +31,7 @@ export class EventEditComponent {
   #fb = inject(NonNullableFormBuilder);
   #router = inject(Router);
   #title = inject(Title);
-  loading = signal(false);
+/*   loading = signal(false); */
   saved = false;
 
   event = input.required<MyEvent>();
@@ -75,9 +76,12 @@ export class EventEditComponent {
 
     this.#eventsService.editEvent(newEvent, this.event().id)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.saved = true;
-        this.#router.navigate(['/events']);
+      .subscribe({
+        next: () => {
+          this.saved = true;
+          this.#router.navigate(['/events']);
+        },
+        error: (error) => this.showModal(error.error.message)
       });
   }
 
@@ -94,5 +98,12 @@ export class EventEditComponent {
     modalRef.componentInstance.title = 'Leaving the page';
     modalRef.componentInstance.body = 'Are you sure? The changes will be lost...';
     return modalRef.result.catch(() => false);
+  }
+
+  showModal(message: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = 'Oopss... Incorrect login';
+    modalRef.componentInstance.body = message;
+/*     this.loading.set(false); */
   }
 }
