@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { User, UserFacebook, UserGoogle, UserLogin } from '../../shared/interfaces/user';
 import { catchError, map, Observable, of } from 'rxjs';
 import {
@@ -12,17 +12,17 @@ import {
 })
 export class AuthService {
   #authUrl = 'auth';
-  #logged: WritableSignal<boolean> = signal(false);
+  #logged = signal(false);
   #http = inject(HttpClient);
 
-  getLogged(): Signal<boolean> { 
+  getLogged() { 
     return this.#logged.asReadonly(); 
   }
 
-  register(user: User): Observable<string> {
+  register(user: User): Observable<User> {
     return this.#http
-      .post<string>(`${this.#authUrl}/register`, user)
-      .pipe(map((resp) => resp));
+      .post<SingleUserResponse>(`${this.#authUrl}/register`, user)
+      .pipe(map((resp) => resp.user));
   }
 
   login(user: UserLogin): Observable<TokenResponse> {

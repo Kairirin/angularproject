@@ -83,7 +83,7 @@ export class LoginComponent {
       lng: this.userLogin.lng
     };
 
-    console.log(resp.credential);
+    console.log(resp.credential); //TODO: Borrar
     this.#authService.loginGoogle(userGoogle)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({

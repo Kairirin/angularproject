@@ -13,14 +13,12 @@ import { Coordinates } from "../../shared/interfaces/coordinates";
 import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
-/* import { LoadButtonComponent } from "../../shared/load-button/load-button.component"; */
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
-
 
 @Component({
   selector: 'register',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective/* , LoadButtonComponent */],
+  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -32,7 +30,6 @@ export class RegisterComponent implements CanComponentDeactivate {
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   saved = false;
   imageBase64 = '';
-/*   loading = signal(false); */
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -83,10 +80,18 @@ export class RegisterComponent implements CanComponentDeactivate {
 
   register() {
     const emailGroup = this.registerForm.get('emailGroup')!.getRawValue();
-    const newUser: User = {
+/*     const newUser: User = {
       ...this.registerForm.getRawValue(),
       email: emailGroup['email'],
       avatar: this.imageBase64
+    }; */
+    const newUser: User = {
+      name: this.registerForm.get('name')!.getRawValue(),
+      email: emailGroup['email'],
+      password: this.registerForm.get('password')!.getRawValue(),
+      avatar: this.imageBase64,
+      lat: this.registerForm.get('lat')!.getRawValue(),
+      lng: this.registerForm.get('lng')!.getRawValue()
     };
 
     this.#authService.register(newUser)
@@ -102,7 +107,7 @@ export class RegisterComponent implements CanComponentDeactivate {
 
   canDeactivate() {
     if (this.saved || this.registerForm.pristine) {
-      this.#router.navigate(['/auth/login']);
+      return true;
     }
     const modalRef = this.#modalService.open(ConfirmModalComponent);
     modalRef.componentInstance.title = 'Leaving the page';
@@ -114,6 +119,5 @@ export class RegisterComponent implements CanComponentDeactivate {
     const modalRef = this.#modalService.open(AlertModalComponent);
     modalRef.componentInstance.title = 'Oopss... Incorrect login';
     modalRef.componentInstance.body = message;
-/*     this.loading.set(false); */
   }
 }

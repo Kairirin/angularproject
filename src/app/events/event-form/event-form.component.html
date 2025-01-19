@@ -1,7 +1,7 @@
-<form (ngSubmit)="addEvent()" [formGroup]="eventForm" class="mt-4">
+<form (ngSubmit)="sendEvent()" [formGroup]="eventForm" class="mt-4">
   <div class="mb-3">
     <label for="title" class="form-label">Title</label>
-    <input type="text" class="form-control" formControlName="title"
+    <input type="text" class="form-control" name="title" formControlName="title"
       [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
     @let titleErrors = eventForm.get('title')?.errors;
     @if(titleErrors?.['required']) {
@@ -19,7 +19,7 @@
   </div>
   <div class="mb-3">
     <label for="date" class="form-label">Date</label>
-    <input type="date" class="form-control" formControlName="date"
+    <input type="date" class="form-control" name="date" formControlName="date"
       [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let dateErrors = eventForm.get('date')?.errors;
     @if(dateErrors?.['required']) {
@@ -30,7 +30,7 @@
   </div>
   <div class="mb-3">
     <label for="description" class="form-label">Description</label>
-    <textarea class="form-control" formControlName="description"
+    <textarea class="form-control" name="description" formControlName="description"
       [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" rows="3">
     </textarea>
     @let descErrors = eventForm.get('description')?.errors;
@@ -40,7 +40,7 @@
   </div>
   <div class="mb-3">
     <label for="price" class="form-label">Price (in €)</label>
-    <input type="number" class="form-control" formControlName="price" step="0.01"
+    <input type="number" class="form-control" name="price" formControlName="price" step="0.01"
       [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let priceErrors = eventForm.get('price')?.errors;
     @if(priceErrors?.['required']) {
@@ -51,7 +51,7 @@
   </div>
   <div class="mb-3">
     <label for="image" class="form-label">Image</label>
-    <input type="file" class="form-control" formControlName="image" #fileImage encodeBase64
+    <input type="file" class="form-control" name="image" formControlName="image" #fileImage encodeBase64
       (encoded)="imgBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let imageErrors = eventForm.get('image')?.errors;
     @if(imageErrors?.['required']) {
@@ -62,6 +62,9 @@
   <img [src]="imgBase64" [alt]="eventForm.get('title')" id="imgPreview" class="img-thumbnail mb-3" />
   }
   <div class="card mt-4">
+    @if (event()){
+      <div class="card-header bg-success text-white" id="address">Current address: {{ event()!.address }}</div>
+    }
     <div id="map">
       <ol-map [coordinates]="coordinates()">
         <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
@@ -70,9 +73,9 @@
     </div>
   </div>
   <div>
-<!--     <load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="eventForm.invalid">
-      Create event
-    </load-button> -->
-    <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Create</button>
+  <!--<load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="editForm.touched && editForm.invalid">
+      Edit
+      </load-button> -->
+    <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">{{ this.event() ? "Edit" : "Create" }}</button>
   </div>
 </form>

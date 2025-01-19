@@ -3,7 +3,7 @@
 
     <div class="mb-3">
         <label for="name">Name:</label>
-        <input type="text" class="form-control" formControlName="name"
+        <input type="text" class="form-control" name="name" formControlName="name"
             [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let nameErrors = registerForm.get('name')?.errors;
         @if (nameErrors?.['required']) {
@@ -14,7 +14,7 @@
         @let emailsGroup = registerForm.get('emailGroup')!;
         <div class="mb-3">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" formControlName="email"
+            <input type="email" class="form-control" name="email" formControlName="email"
                 [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
             @let email = emailsGroup.get('email')!;
             @if (email.errors?.['required'] || email.errors?.['email']) {
@@ -24,7 +24,7 @@
         <div class="mb-3">
             @let emailConfirm = emailsGroup.get('email2')!;
             <label for="email2">Repeat Email:</label>
-            <input type="email" class="form-control" formControlName="email2" [class]="{
+            <input type="email" class="form-control" name="email2" formControlName="email2" [class]="{
                 'is-valid': email.value && emailConfirm.touched && !emailsGroup.errors?.['matchValues'],
                 'is-invalid': emailConfirm.touched && emailsGroup.errors?.['matchValues'],
               }" />
@@ -35,7 +35,7 @@
     </ng-container>
     <div class="mb-3">
         <label for="password">Password:</label>
-        <input type="password" class="form-control" formControlName="password"
+        <input type="password" class="form-control" name="password" formControlName="password"
             [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let pswErrors = registerForm.get('password')?.errors;
         @if (pswErrors?.['required']) {
@@ -48,18 +48,16 @@
     <div class="form-row">
         <div class="mb-3 col">
             <label for="lat">Latitude:</label>
-            <input type="text" class="form-control" formControlName="lat" placeholder="Geolocating..."
-                readonly="readonly" />
+            <input type="text" class="form-control" name="lat" formControlName="lat" placeholder="Geolocating..." readonly="readonly" />
         </div>
         <div class="mb-3 col">
             <label for="lng">Longitude:</label>
-            <input type="text" class="form-control" formControlName="lng" placeholder="Geolocating..."
-                readonly="readonly" />
+            <input type="text" class="form-control" name="lng" formControlName="lng" placeholder="Geolocating..." readonly="readonly" />
         </div>
     </div>
     <div class="mb-3">
         <label for="avatar">Avatar image</label>
-        <input type="file" class="form-control" formControlName="avatar" #fileImage encodeBase64
+        <input type="file" class="form-control" name="avatar" formControlName="avatar" #fileImage encodeBase64
             (encoded)="imageBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
         @let avatarErrors = registerForm.get("avatar")?.errors;
         @if (avatarErrors?.['required']) {
@@ -71,9 +69,6 @@
     }
     <div>
         <a [routerLink]="['/auth/login']" class="btn btn-secondary">Go back</a>
-<!--         <load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="registerForm.invalid">
-        Create account
-        </load-button> -->
         <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create account</button>
     </div>
 </form>

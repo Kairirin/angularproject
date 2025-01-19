@@ -93,7 +93,7 @@ export class EventsPageComponent {
         else {
           this.load.set(false);
         }
-      }); //TODO: Mejorar esto, pero funciona todo
+      }); //TODO: Mejorar esto.
 
     this.#usersService.getProfile(Number(this.creator()))
       .pipe(takeUntilDestroyed(this.#destroyRef))

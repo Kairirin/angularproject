@@ -25,7 +25,7 @@ export const eventsRoutes: Routes = [
       event: eventResolver,
     },
     loadComponent: () =>
-        import('./event-edit/event-edit.component').then((m) => m.EventEditComponent),
+        import('./event-form/event-form.component').then((m) => m.EventFormComponent),
   },
   {
     path: ':id',

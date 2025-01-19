@@ -8,6 +8,5 @@ import { Component, input } from '@angular/core';
 })
 export class LoadButtonComponent {
   colorClass = input('btn-primary');
-  formInvalid = input(false);
   loading = input(false);
 }
