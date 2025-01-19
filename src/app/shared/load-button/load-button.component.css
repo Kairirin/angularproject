@@ -2,7 +2,7 @@ button {
   position: relative;
 
   .load-overlay {
-    box-sizing: border-box;
+    box-sizing: content-box;
     padding: 5px;
     position: absolute;
     width: 100%;

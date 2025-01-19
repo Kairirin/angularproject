@@ -14,11 +14,12 @@ import { CanComponentDeactivate } from "../../shared/guards/leave-page.guard";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
+import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 
 @Component({
   selector: 'register',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective],
+  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, LoadButtonComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -30,6 +31,7 @@ export class RegisterComponent implements CanComponentDeactivate {
   actualGeolocation = toSignal(from(MyGeolocation.getLocation().then((result) => result)));
   saved = false;
   imageBase64 = '';
+  loading = signal(false);
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -79,12 +81,8 @@ export class RegisterComponent implements CanComponentDeactivate {
   }
 
   register() {
+    this.loading.set(!this.loading());
     const emailGroup = this.registerForm.get('emailGroup')!.getRawValue();
-/*     const newUser: User = {
-      ...this.registerForm.getRawValue(),
-      email: emailGroup['email'],
-      avatar: this.imageBase64
-    }; */
     const newUser: User = {
       name: this.registerForm.get('name')!.getRawValue(),
       email: emailGroup['email'],
@@ -117,7 +115,8 @@ export class RegisterComponent implements CanComponentDeactivate {
 
   showModal(message: string) {
     const modalRef = this.#modalService.open(AlertModalComponent);
-    modalRef.componentInstance.title = 'Oopss... Incorrect login';
+    modalRef.componentInstance.title = 'Oopss... Something went wrong';
     modalRef.componentInstance.body = message;
+    this.loading.set(false);
   }
 }

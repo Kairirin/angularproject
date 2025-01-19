@@ -1,4 +1,4 @@
-<button [class]="['btn', colorClass()]" [disabled]="loading()">
+<button [class]="['btn', colorClass()]" [disabled]="loading() || formInvalid()">
     @if(loading()) {
     <div class="load-overlay">
         <svg class="load-icon" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.349 26.35">

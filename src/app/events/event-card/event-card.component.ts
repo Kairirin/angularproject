@@ -1,5 +1,5 @@
 import { DatePipe, NgClass } from "@angular/common";
-import { Component, input, output, inject, DestroyRef } from "@angular/core";
+import { Component, input, output, inject, DestroyRef, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { IntlCurrencyPipe } from "../../shared/pipes/intl-currency.pipe";

@@ -73,9 +73,7 @@
     </div>
   </div>
   <div>
-  <!--<load-button type="submit" [loading]="loading()" (submit)="loading.set(!loading())" [formInvalid]="editForm.touched && editForm.invalid">
-      Edit
-      </load-button> -->
-    <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">{{ this.event() ? "Edit" : "Create" }}</button>
+  <load-button type="submit" [loading]="loading()" [formInvalid]="disabledButton() && eventForm.invalid">{{ this.event() ? "Edit" : "Create" }}</load-button>
+<!--     <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">{{ this.event() ? "Edit" : "Create" }}</button> -->
   </div>
 </form>

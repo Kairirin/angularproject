@@ -18,12 +18,13 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 import { Title } from "@angular/platform-browser";
+import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 
 
 @Component({
   selector: 'event-form',
   standalone: true,
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective],
+  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
 })
@@ -35,7 +36,8 @@ export class EventFormComponent {
   #fb = inject(NonNullableFormBuilder);
   #title = inject(Title);
   event = input.required<MyEvent | null>();
-
+  loading = signal(false);
+  disabledButton = signal(false);
 
   saved = false;
 
@@ -65,14 +67,17 @@ export class EventFormComponent {
         this.imgBase64 = this.event()!.image;
         this.address = this.event()!.address;
         this.coordinates.set([this.event()!.lng, this.event()!.lat]);
+        this.eventForm.updateValueAndValidity;
       }
       else {
         this.coordinates.set([this.actualGeolocation()[0], this.actualGeolocation()[1]]);
+        this.disabledButton.set(true);
       }
     });
   }
 
   sendEvent() {
+    this.loading.set(!this.loading());
     const newEvent: MyEventInsert = {
       ...this.eventForm.getRawValue(),
       lat: this.coordinates()[1],
@@ -125,5 +130,6 @@ export class EventFormComponent {
     const modalRef = this.#modalService.open(AlertModalComponent);
     modalRef.componentInstance.title = 'Oopss... Something went wrong';
     modalRef.componentInstance.body = message;
+    this.loading.set(false);
   }
 }
