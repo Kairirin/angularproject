@@ -1,7 +1,6 @@
 import { Component, inject, DestroyRef, effect, signal } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
 import { matchValues } from "../../shared/validators/match-values.Validator";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
@@ -15,11 +14,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
+import { CropperComponent } from "../../shared/cropper/cropper.component";
 
 @Component({
   selector: 'register',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, LoadButtonComponent],
+  imports: [RouterLink, ReactiveFormsModule, /* EncodeBase64Directive, */ ValidationClassesDirective, LoadButtonComponent, CropperComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -32,6 +32,7 @@ export class RegisterComponent implements CanComponentDeactivate {
   saved = false;
   imageBase64 = '';
   loading = signal(false);
+  imageUpload = signal<Event | null>(null);
 
   registerForm = new FormGroup({
     name: new FormControl('', {
@@ -80,6 +81,10 @@ export class RegisterComponent implements CanComponentDeactivate {
     });
   }
 
+  runCropper(event: Event) {
+    this.imageUpload.set(event);
+  }
+
   register() {
     this.loading.set(!this.loading());
     const emailGroup = this.registerForm.get('emailGroup')!.getRawValue();
@@ -96,6 +101,7 @@ export class RegisterComponent implements CanComponentDeactivate {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: () => {
+          console.log(this.imageBase64);
           this.saved = true;
           this.#router.navigate(['/auth/login']);
         },

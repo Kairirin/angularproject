@@ -57,16 +57,21 @@
     </div>
     <div class="mb-3">
         <label for="avatar">Avatar image</label>
-        <input type="file" class="form-control" name="avatar" formControlName="avatar" #fileImage encodeBase64
-            (encoded)="imageBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+        <input type="file" class="form-control" name="avatar" formControlName="avatar" (change)="runCropper($event)" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+        <!-- <input type="file" class="form-control" name="avatar" formControlName="avatar" #fileImage encodeBase64
+            (encoded)="imageBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" /> -->
         @let avatarErrors = registerForm.get("avatar")?.errors;
         @if (avatarErrors?.['required']) {
         <div class="invalid-feedback">An avatar is required</div>
         }
     </div>
-    @if (imageBase64) {
-    <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3" />
+    @if(imageUpload()){
+        <cropper [image]="imageUpload()" [ratio]="1" [width]="200" (ready)="imageBase64 = $event"></cropper>
     }
+
+<!--     @if (imageBase64) {
+    <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3" />
+    } -->
     <div>
         <a [routerLink]="['/auth/login']" class="btn btn-secondary">Go back</a>
         <load-button type="submit" [loading]="loading()" [formInvalid]="registerForm.invalid">Create account</load-button>

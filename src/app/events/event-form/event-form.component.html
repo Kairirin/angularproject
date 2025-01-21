@@ -51,16 +51,17 @@
   </div>
   <div class="mb-3">
     <label for="image" class="form-label">Image</label>
-    <input type="file" class="form-control" name="image" formControlName="image" #fileImage encodeBase64
-      (encoded)="imgBase64 = $event" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+    <input type="file" class="form-control" name="image" formControlName="image" (change)="runCropper($event)" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let imageErrors = eventForm.get('image')?.errors;
     @if(imageErrors?.['required']) {
     <div class="invalid-feedback">An image is required</div>
     }
   </div>
-  @if(imgBase64) {
+<!--   @if(imgBase64) {
   <img [src]="imgBase64" [alt]="eventForm.get('title')" id="imgPreview" class="img-thumbnail mb-3" />
-  }
+  } -->
+  <cropper [image]="imageUpload()" [ratio]="16 / 10" [width]="1024" (ready)="imgBase64 = $event"></cropper>
+
   <div class="card mt-4">
     @if (event()){
       <div class="card-header bg-success text-white" id="address">Current address: {{ event()!.address }}</div>

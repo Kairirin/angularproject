@@ -1,18 +1,23 @@
 <div class="row mt-4" id="profile">
     <div class="col-3">
         <div>
-            <img class="w-100" id="avatar" [src]="user().avatar" alt="{{ user().name }}'s avatar" />
-            @if (user().me) {
-            <label class="btn btn-sm btn-danger">
-                <i class="bi bi-image"></i>
-                <input type="file" class="d-none" #fileImage encodeBase64 (encoded)="changeAvatar($event)" />
-            </label>
+            @if(!imageUpload()) {
+                <img class="w-100" id="avatar" [src]="user().avatar" alt="{{ user().name }}'s avatar" />
+            }
+            @if (user().me && !imageUpload()) {
+                <label class="btn btn-sm btn-danger">
+                    <i class="bi bi-image"></i>
+                <!-- <input type="file" class="d-none" #fileImage encodeBase64 (encoded)="changeAvatar($event)" /> -->
+                <input type="file" class="d-none" (change)="runCropper($event)" />
+                </label>
+            }@else if (user().me && imageUpload()) {
+                <cropper [image]="imageUpload()" [ratio]="1" [width]="200" (ready)="imgBase64 = $event"></cropper>
+                <button class="btn btn-success" (click)="changeAvatar()">Save</button>
             }
         </div>
     </div>
 
     <div class="col-9" id="profileInfo">
-        <!--  Cambiar h4 por inputs con un botón -->
         @if (!editProfile() && !editPassword()) {
         <h4 id="name">{{ user().name }}</h4>
         <h4 id="email">

@@ -19,12 +19,13 @@ import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm
 import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 import { Title } from "@angular/platform-browser";
 import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
+import { CropperComponent } from "../../shared/cropper/cropper.component";
 
 
 @Component({
   selector: 'event-form',
   standalone: true,
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent],
+  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent, CropperComponent],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
 })
@@ -55,6 +56,7 @@ export class EventFormComponent {
 
   address = "";
   imgBase64 = '';
+  imageUpload = signal<Event | null>(null);
 
   constructor() {
     effect(() => {
@@ -74,6 +76,10 @@ export class EventFormComponent {
         this.disabledButton.set(true);
       }
     });
+  }
+
+  runCropper(event: Event) {
+    this.imageUpload.set(event);
   }
 
   sendEvent() {

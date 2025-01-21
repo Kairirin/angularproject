@@ -8,14 +8,15 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { UsersService } from '../services/users.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
 import { matchValues } from '../../shared/validators/match-values.Validator';
 import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CropperComponent } from '../../shared/cropper/cropper.component';
+import { faThinkPeaks } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'profile',
-  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, EncodeBase64Directive, ValidationClassesDirective],
+  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, /* EncodeBase64Directive, */ ValidationClassesDirective, CropperComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -28,6 +29,9 @@ export class ProfileComponent {
   user = input.required<User>();
   editProfile = signal(false);
   editPassword = signal(false);
+  imageUpload = signal<Event | null>(null);
+  imgBase64 = '';
+
 
   profileForm = new FormGroup({
     name: new FormControl('', {
@@ -61,6 +65,10 @@ export class ProfileComponent {
       }
     });
   }
+
+  runCropper(event: Event) {
+    this.imageUpload.set(event);
+  } 
 
   changeButton(type: string) {
     switch (type) {
@@ -103,9 +111,9 @@ export class ProfileComponent {
       })
   }
 
-  changeAvatar(avatar: string) {
+  changeAvatar() {
     const userPhoto: UserPhotoEdit = {
-      avatar: avatar
+      avatar: this.imgBase64
     }
 
     this.#userService.saveAvatar(userPhoto)
@@ -114,6 +122,7 @@ export class ProfileComponent {
         next: () => {
           this.user().avatar = userPhoto.avatar;
           this.#changeDetector.markForCheck();
+          this.imageUpload.set(null);
         }
       });
   }
