@@ -9,11 +9,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPeopleGroup, faThumbsUp, faThumbsDown, faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons';
+import { AlertModalComponent } from "../../shared/modals/alert-modal/alert-modal.component";
 
 @Component({
   selector: 'event-card',
   standalone: true,
-  imports: [NgClass, DatePipe, IntlCurrencyPipe, RouterLink, FaIconComponent],
+  imports: [ NgClass, DatePipe, IntlCurrencyPipe, RouterLink, FaIconComponent ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
 })
@@ -24,10 +25,12 @@ export class EventCardComponent {
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
   #modalService = inject(NgbModal);
-  icons = { faPeopleGroup, faThumbsUp, faThumbsDown, faTrashCan, faUserPen }
+  icons = { faPeopleGroup, faThumbsUp, faThumbsDown, faTrashCan, faUserPen };
 
   attendEvent() {
     const attending = this.event().attend;
+    const numberAux = this.event().numAttend;
+
     if (!this.event().attend) {
       this.event().attend = true;
       this.event().numAttend++;
@@ -40,6 +43,7 @@ export class EventCardComponent {
           },
           error: () => {
             this.event().attend = attending;
+            this.event().numAttend = numberAux;
           },
         });
     }
@@ -55,6 +59,7 @@ export class EventCardComponent {
           },
           error: () => {
             this.event().attend = attending;
+            this.event().numAttend = numberAux;
           },
         });
     }
@@ -69,8 +74,13 @@ export class EventCardComponent {
       if(result){
         this.#eventsService.deleteEvent(this.event().id!)
           .pipe(takeUntilDestroyed(this.#destroyRef))
-          .subscribe(() => {
-            this.deleted.emit();
+          .subscribe({
+            next: () => this.deleted.emit(),
+            error: () => {
+              const modalRef = this.#modalService.open(AlertModalComponent);
+              modalRef.componentInstance.title = 'Oopss... Try again';
+              modalRef.componentInstance.body = "The event could not be removed at this moment";
+            }
           })
       }
       else

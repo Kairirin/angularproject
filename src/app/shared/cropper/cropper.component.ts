@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { ImageCropperComponent, ImageCroppedEvent, LoadedImage, base64ToFile } from 'ngx-image-cropper';
+import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -24,18 +24,7 @@ export class CropperComponent {
     }
     
     imageCropped(event: ImageCroppedEvent) {
-/*       this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.base64!); */
       this.croppedImage = event.base64!;
       this.ready.emit(this.croppedImage as string);
-    }
-
-    imageLoaded(image: LoadedImage) {
-        // show cropper
-    }
-    cropperReady() {
-        // cropper ready
-    }
-    loadImageFailed() {
-        // show message
     }
 }

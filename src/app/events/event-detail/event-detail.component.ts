@@ -17,7 +17,7 @@ import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'event-detail',
   standalone: true,
-  imports: [EventCardComponent, OlMapDirective, OlMarkerDirective, RouterLink, ReactiveFormsModule, DatePipe, FaIconComponent],
+  imports: [ EventCardComponent, OlMapDirective, OlMarkerDirective, RouterLink, ReactiveFormsModule, DatePipe, FaIconComponent ],
   templateUrl: './event-detail.component.html',
   styleUrl: './event-detail.component.css'
 })
@@ -29,6 +29,7 @@ export class EventDetailComponent {
   #destroyRef = inject(DestroyRef);
   event = input.required<MyEvent>();
   icons = { faLocationDot };
+  
   newAttendance = signal<boolean>(true);
   attendResource = rxResource({
     request: () => this.event().id,

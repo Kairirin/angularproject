@@ -8,11 +8,10 @@ import { debounceTime, distinctUntilChanged } from "rxjs";
 import { UsersService } from "../../profile/services/users.service";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
-
 @Component({
   selector: 'events-page',
   standalone: true,
-  imports: [ReactiveFormsModule, EventCardComponent],
+  imports: [ ReactiveFormsModule, EventCardComponent ],
   templateUrl: './events-page.component.html',
   styleUrl: './events-page.component.css',
   animations: [
@@ -29,6 +28,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
     ]),
   ],
 })
+
 export class EventsPageComponent {
   #eventsService = inject(EventsService);
   #usersService = inject(UsersService);
@@ -42,7 +42,8 @@ export class EventsPageComponent {
       distinctUntilChanged(),
     ),
     { initialValue: '' }
-  )
+  );
+
   order = signal("distance");
   page = signal(1);
   load = signal(false);
@@ -93,8 +94,11 @@ export class EventsPageComponent {
   }
 
   getEventsByCreator() {
-    this.#eventsService
-      .getEvents(this.search()!, this.order(), this.page(), this.creator()!)
+    this.#usersService.getProfile(Number(this.creator()))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe((resp) => this.username.set(resp.name));
+
+    this.#eventsService.getEvents(this.search()!, this.order(), this.page(), this.creator()!)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((resp) => {
         if (this.page() === 1)
@@ -109,10 +113,6 @@ export class EventsPageComponent {
           this.load.set(false);
         }
       });
-
-    this.#usersService.getProfile(Number(this.creator()))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((resp) => this.username.set(resp.name));
   }
 
   getEventsByAttending() {

@@ -13,11 +13,11 @@ import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../../shared/cropper/cropper.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faLocationDot, faCameraRetro } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faCameraRetro, faPencil, faLock } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'profile',
-  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, ValidationClassesDirective, CropperComponent, FaIconComponent],
+  imports: [ RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, ValidationClassesDirective, CropperComponent, FaIconComponent ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -32,7 +32,7 @@ export class ProfileComponent {
   editPassword = signal(false);
   imageUpload = signal<Event | null>(null);
   imgBase64 = '';
-  icons = { faLocationDot, faCameraRetro };
+  icons = { faLocationDot, faCameraRetro, faPencil, faLock };
 
   profileForm = new FormGroup({
     name: new FormControl('', {
@@ -41,7 +41,7 @@ export class ProfileComponent {
     }),
     email: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required]
+      validators: [Validators.required, Validators.email]
     })
   })
 
@@ -89,11 +89,17 @@ export class ProfileComponent {
 
     this.#userService.saveProfile(userProfile)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.user().name = userProfile.name;
-        this.user().email = userProfile.email;
-        this.showModal("Profile updated");
-        this.changeButton("profile");
+      .subscribe({
+        next: () => {
+          this.user().name = userProfile.name;
+          this.user().email = userProfile.email;
+          this.showModal("Done!", "Profile updated");
+          this.changeButton("profile");
+        },
+        error: () => {
+          this.showModal("Oops...", "Try again later!");
+          this.changeButton("profile");
+        }
       })
   }
 
@@ -104,11 +110,18 @@ export class ProfileComponent {
 
     this.#userService.savePassword(userPassword)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.user().password = userPassword.password;
-        this.showModal("Password updated");
-        this.passwordForm.reset();
-        this.changeButton("password");
+      .subscribe({
+        next: () => {
+          this.user().password = userPassword.password;
+          this.showModal("Done!", "Password updated");
+          this.passwordForm.reset();
+          this.changeButton("password");
+        },
+        error: () => {
+          this.showModal("Oops...", "Try again later");
+          this.passwordForm.reset();
+          this.changeButton("password");
+        }
       })
   }
 
@@ -124,13 +137,17 @@ export class ProfileComponent {
           this.user().avatar = userPhoto.avatar;
           this.#changeDetector.markForCheck();
           this.imageUpload.set(null);
+        },
+        error: () => {
+          this.showModal("Oops...", "Try again later");
+          this.imageUpload.set(null);
         }
       });
   }
 
-  showModal(body: string) {
+  showModal(title: string, body: string) {
     const modalRef = this.#modalService.open(AlertModalComponent);
-    modalRef.componentInstance.title = 'Done!';
+    modalRef.componentInstance.title = title;
     modalRef.componentInstance.body = body;
   }
 }

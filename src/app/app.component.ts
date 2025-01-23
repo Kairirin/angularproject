@@ -12,7 +12,7 @@ import { trigger, transition, query, style, group, animate } from "@angular/anim
   styleUrl: './app.component.css',
   animations: [
     trigger('routeAnimation', [
-      transition('eventsPage => profile', [
+      transition('eventsPage => others', [
         query(':enter, :leave', style({ position: 'absolute', width: '100%' })),
         query(':enter', style({ transform: 'translateX(100%)' })),
         group([
@@ -23,7 +23,7 @@ import { trigger, transition, query, style, group, animate } from "@angular/anim
           query(':enter', [animate('0.5s', style({ transform: 'none' }))]),
         ]),
       ]),
-      transition('profile => eventsPage', [
+      transition('others => eventsPage', [
         query(':enter, :leave', style({ position: 'absolute', width: '100%' })),
         query(':enter', style({ transform: 'translateX(-100%)' })),
         group([
@@ -34,7 +34,7 @@ import { trigger, transition, query, style, group, animate } from "@angular/anim
           query(':enter', [animate('0.5s', style({ transform: 'none' }))]),
         ]),
       ]),
-      transition('eventsPage => eventAction', [
+      transition('eventsPage => eventDetail', [
         query(':enter, :leave', style({ position: 'absolute', width: '100%' })),
         query(':enter', style({ transform: 'scale(.3)', opacity: 0 })),
         group([
@@ -45,7 +45,7 @@ import { trigger, transition, query, style, group, animate } from "@angular/anim
           query(':enter', [animate('0.5s', style({ transform: 'none', opacity: 1 }))]),
         ]),
       ]),
-      transition('eventAction => eventsPage', [
+      transition('eventDetail => eventsPage', [
         query(':enter, :leave', style({ position: 'absolute', width: '100%' })),
         query(':enter', style({ transform: 'scale(.3)', opacity: 0 })),
         group([

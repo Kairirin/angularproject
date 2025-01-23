@@ -1,11 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { User, UserFacebook, UserGoogle, UserLogin } from '../../shared/interfaces/user';
 import { catchError, map, Observable, of } from 'rxjs';
-import {
-  SingleUserResponse,
-  TokenResponse,
-} from '../../shared/interfaces/responses';
+import { SingleUserResponse, TokenResponse } from '../../shared/interfaces/responses';
 
 @Injectable({
   providedIn: 'root',

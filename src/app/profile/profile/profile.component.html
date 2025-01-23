@@ -8,7 +8,7 @@
                 <label class="btn btn-sm btn-danger">
                     <fa-icon [icon]="icons.faCameraRetro"></fa-icon>
                 <!-- <input type="file" class="d-none" #fileImage encodeBase64 (encoded)="changeAvatar($event)" /> -->
-                <input type="file" class="d-none" (change)="runCropper($event)" />
+                    <input type="file" class="d-none" (change)="runCropper($event)" />
                 </label>
             }@else if (user().me && imageUpload()) {
                 <cropper [image]="imageUpload()" [ratio]="1" [width]="200" (ready)="imgBase64 = $event"></cropper>
@@ -23,15 +23,15 @@
         <h4 id="email">
             <small class="text-muted">{{ user().email }}</small>
         </h4>
-
+        
         @if (user().me) {
         <div>
             <button class="btn btn-primary" id="editProfile" (click)="changeButton('profile')">
-                <i class="fa-regular fa-pen-to-square"></i>
+                <fa-icon [icon]="icons.faPencil"></fa-icon>
                 Edit profile
             </button>
             <button class="btn btn-success" id="editPassword" (click)="changeButton('password')">
-                <i class="fa-solid fa-lock"></i>
+                <fa-icon [icon]="icons.faLock"></fa-icon>
                 Edit password
             </button>
         </div>
@@ -49,17 +49,15 @@
             <form (ngSubmit)="updateProfile()" [formGroup]="profileForm">
                 <div class="mb-3">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" formControlName="name"
-                        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+                    <input type="text" class="form-control" formControlName="name" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
                     @let nameErrors = profileForm.get('name')?.errors;
                     @if (nameErrors?.['required']) {
                     <div class="invalid-feedback">You must enter a valid username</div>
                     }
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control" formControlName="email"
-                        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+                    <input type="email" class="form-control" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
                     @let emailErrors = profileForm.get('email')?.errors;
-                    @if (emailErrors?.['required']) {
+                    @if (emailErrors?.['required'] || emailErrors?.['email']) {
                     <div class="invalid-feedback">You must enter a valid email</div>
                     }
                 </div>
@@ -73,14 +71,12 @@
         <div class="col-9" id="passwordForm">
             <form (ngSubmit)="updatePassword()" [formGroup]="passwordForm">
                 <div class="mb-3">
-                    <label for="password">Password:</label>
                     <input type="password" class="form-control" formControlName="password" placeholder="Password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
                     @let password = passwordForm.get('password')!;
                     @let password2 = passwordForm.get('password')!;
                     @if (password.errors?.['required']) {
                     <div class="invalid-feedback">You must enter a password</div>
                     }
-                    <label for="password2">Repeat password:</label>
                     <input type="password" class="form-control" formControlName="password2" placeholder="Repeat password" [class]="{
                         'is-valid': password2.touched && !passwordForm.errors?.['matchValues'],
                         'is-invalid': password2.touched && passwordForm.errors?.['matchValues'],
@@ -92,7 +88,6 @@
         </div>
         }
     </div>
-
 </div>
 
 <div class="card mt-4">

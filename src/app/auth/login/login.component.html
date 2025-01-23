@@ -4,8 +4,7 @@
 
     <div class="mb-3">
       <label for="email">Email:</label>
-      <input type="email" class="form-control" formControlName="email"
-        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+      <input type="email" class="form-control" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
       @let emailErrors = loginForm.get('email')?.errors;
       @if (emailErrors?.['required'] || emailErrors?.['email']) {
       <div class="invalid-feedback">You must enter a valid email</div>
@@ -13,21 +12,18 @@
     </div>
     <div class="mb-3">
       <label for="password">Password:</label>
-      <input type="password" class="form-control" formControlName="password"
-        [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
+      <input type="password" class="form-control" formControlName="password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" required />
       @let passErrors = loginForm.get('password')?.errors;
       @if (passErrors?.['required']) {
       <div class="invalid-feedback">You must enter a password</div>
       }
     </div>
     <load-button type="submit" [loading]="loading()" (click)="loading.set(!loading())">Login</load-button>
-
-<!--     <button type="submit" class="btn btn-primary">Login</button> -->
+<!--    <button type="submit" class="btn btn-primary">Login</button> -->
   </form>
   <div>
     <google-login class="btn" (login)="loginGoogle($event)"></google-login>
-    <button fbLogin [scopes]="['email', 'public_profile']" class="btn btn-primary" (loginOk)="loginFacebook($event)"
-      (loginError)="showError($event)">
+    <button fbLogin [scopes]="['email', 'public_profile']" class="btn btn-primary" (loginOk)="loginFacebook($event)" (loginError)="showError($event)">
       <fa-icon [icon]="iconFacebook"></fa-icon>
       Inicia sesión con Facebook
     </button>

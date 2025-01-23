@@ -12,12 +12,11 @@ export class LoadGoogleApiService {
 
   constructor() {
     if (this.#clientId === null) {
-      // Error al desarrollador cuando no ha inyectado la id de Google
       throw new Error(
         'LoadGoogleApiService: You must call provideGoogleId in your providers array'
       );
     }
-    this.#loader = this.#loadApi(); // Empezamos a cargar la librería
+    this.#loader = this.#loadApi();
   }
 
   get credential$() {
@@ -25,11 +24,12 @@ export class LoadGoogleApiService {
   }
 
   async setGoogleBtn(btn: HTMLElement) {
-    await this.#loader; // Espera a que se haya terminado de cargar (si no lo ha hecho ya)
-    google.accounts.id.renderButton(
-      btn,
-      { theme: 'filled_blue', size: 'large', type: 'standard' } // Diseño del botón
-    );
+    await this.#loader;
+    google.accounts.id.renderButton(btn, {
+      theme: 'filled_blue',
+      size: 'large',
+      type: 'standard',
+    });
   }
 
   async #loadApi(): Promise<void> {
@@ -43,7 +43,7 @@ export class LoadGoogleApiService {
     google.accounts.id.initialize({
       client_id: this.#clientId!,
       callback: (response) => {
-        this.#credential$.next(response); // Se le llama cada vez que hay un login con Google
+        this.#credential$.next(response);
       },
     });
   }

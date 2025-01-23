@@ -9,7 +9,7 @@ export const profileRoutes: Routes = [
     },
     loadComponent: () =>
         import('./profile/profile.component').then((m) => m.ProfileComponent),
-    data: { animation: 'profile' }
+    data: { animation: 'others' }
   },
   {
     path: ':id',
@@ -18,7 +18,7 @@ export const profileRoutes: Routes = [
     },
     loadComponent: () =>
         import('./profile/profile.component').then((m) => m.ProfileComponent),
-    data: { animation: 'profile' }
+    data: { animation: 'others' }
   },
   { path: '', redirectTo: '/profile/me', pathMatch: 'full' },
 ];

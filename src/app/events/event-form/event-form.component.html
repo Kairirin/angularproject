@@ -1,15 +1,13 @@
 <form (ngSubmit)="sendEvent()" [formGroup]="eventForm" class="mt-4">
   <div class="mb-3">
     <label for="title" class="form-label">Title</label>
-    <input type="text" class="form-control" name="title" formControlName="title"
-      [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+    <input type="text" class="form-control" name="title" formControlName="title" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
     @let titleErrors = eventForm.get('title')?.errors;
     @if(titleErrors?.['required']) {
     <div class="invalid-feedback">Title cannot be empty</div>
     } @if(titleErrors?.['minlength']) {
     <div class="invalid-feedback">
-      You must enter at least {{ titleErrors?.['minlength'].requiredLength - titleErrors?.['minlength'].actualLength }}
-      characters more
+      You must enter at least {{ titleErrors?.['minlength'].requiredLength - titleErrors?.['minlength'].actualLength }} characters more
     </div>
     } @if(titleErrors?.['pattern']){
     <div class="invalid-feedback">
@@ -19,8 +17,7 @@
   </div>
   <div class="mb-3">
     <label for="date" class="form-label">Date</label>
-    <input type="date" class="form-control" name="date" formControlName="date"
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+    <input type="date" class="form-control" name="date" formControlName="date" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let dateErrors = eventForm.get('date')?.errors;
     @if(dateErrors?.['required']) {
     <div class="invalid-feedback">Date is required</div>
@@ -30,8 +27,7 @@
   </div>
   <div class="mb-3">
     <label for="description" class="form-label">Description</label>
-    <textarea class="form-control" name="description" formControlName="description"
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" rows="3">
+    <textarea class="form-control" name="description" formControlName="description" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" rows="3">
     </textarea>
     @let descErrors = eventForm.get('description')?.errors;
     @if(descErrors?.['required']) {
@@ -40,8 +36,7 @@
   </div>
   <div class="mb-3">
     <label for="price" class="form-label">Price (in €)</label>
-    <input type="number" class="form-control" name="price" formControlName="price" step="0.01"
-      [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
+    <input type="number" class="form-control" name="price" formControlName="price" step="0.01" [validationClasses]="{valid: 'is-valid', invalid: 'is-invalid'}" />
     @let priceErrors = eventForm.get('price')?.errors;
     @if(priceErrors?.['required']) {
     <div class="invalid-feedback">Price is required</div>

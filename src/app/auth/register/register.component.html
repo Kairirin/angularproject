@@ -3,8 +3,7 @@
 
     <div class="mb-3">
         <label for="name">Name:</label>
-        <input type="text" class="form-control" name="name" formControlName="name"
-            [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+        <input type="text" class="form-control" name="name" formControlName="name" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let nameErrors = registerForm.get('name')?.errors;
         @if (nameErrors?.['required']) {
         <div class="invalid-feedback">You must enter a username</div>
@@ -14,8 +13,7 @@
         @let emailsGroup = registerForm.get('emailGroup')!;
         <div class="mb-3">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" name="email" formControlName="email"
-                [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+            <input type="email" class="form-control" name="email" formControlName="email" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
             @let email = emailsGroup.get('email')!;
             @if (email.errors?.['required'] || email.errors?.['email']) {
             <div class="invalid-feedback">You must enter an email with the correct format</div>
@@ -35,8 +33,7 @@
     </ng-container>
     <div class="mb-3">
         <label for="password">Password:</label>
-        <input type="password" class="form-control" name="password" formControlName="password"
-            [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
+        <input type="password" class="form-control" name="password" formControlName="password" [validationClasses]="{valid: 'is-valid', invalid:'is-invalid'}" />
         @let pswErrors = registerForm.get('password')?.errors;
         @if (pswErrors?.['required']) {
         <div class="invalid-feedback">You must enter a password</div>
@@ -68,7 +65,6 @@
     @if(imageUpload()){
         <cropper [image]="imageUpload()" [ratio]="1" [width]="200" (ready)="imageBase64 = $event"></cropper>
     }
-
 <!--     @if (imageBase64) {
     <img [src]="imageBase64" alt="Avatar preview" id="imagePreview" class="img-thumbnail mb-3" />
     } -->

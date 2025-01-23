@@ -20,11 +20,10 @@ import { Title } from "@angular/platform-browser";
 import { LoadButtonComponent } from "../../shared/load-button/load-button.component";
 import { CropperComponent } from "../../shared/cropper/cropper.component";
 
-
 @Component({
   selector: 'event-form',
   standalone: true,
-  imports: [ReactiveFormsModule, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent, CropperComponent],
+  imports: [ ReactiveFormsModule, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent, CropperComponent ],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
 })
@@ -68,7 +67,6 @@ export class EventFormComponent {
         this.imgBase64 = this.event()!.image;
         this.address = this.event()!.address;
         this.coordinates.set([this.event()!.lng, this.event()!.lat]);
-        this.eventForm.updateValueAndValidity;
       }
       else {
         this.coordinates.set([this.actualGeolocation()[0], this.actualGeolocation()[1]]);
