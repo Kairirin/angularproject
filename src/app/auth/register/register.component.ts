@@ -19,7 +19,7 @@ import { CropperComponent } from "../../shared/cropper/cropper.component";
 @Component({
   selector: 'register',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, /* EncodeBase64Directive, */ ValidationClassesDirective, LoadButtonComponent, CropperComponent],
+  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, LoadButtonComponent, CropperComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })

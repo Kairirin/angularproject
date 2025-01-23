@@ -12,11 +12,12 @@ import { matchValues } from '../../shared/validators/match-values.Validator';
 import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../../shared/cropper/cropper.component';
-import { faThinkPeaks } from '@fortawesome/free-brands-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faLocationDot, faCameraRetro } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'profile',
-  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, /* EncodeBase64Directive, */ ValidationClassesDirective, CropperComponent],
+  imports: [RouterLink, ReactiveFormsModule, ValidationClassesDirective, OlMapDirective, OlMarkerDirective, ValidationClassesDirective, CropperComponent, FaIconComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -31,7 +32,7 @@ export class ProfileComponent {
   editPassword = signal(false);
   imageUpload = signal<Event | null>(null);
   imgBase64 = '';
-
+  icons = { faLocationDot, faCameraRetro };
 
   profileForm = new FormGroup({
     name: new FormControl('', {

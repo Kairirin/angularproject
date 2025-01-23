@@ -7,11 +7,13 @@ import { MyEvent } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalComponent } from "../../shared/modals/confirm-modal/confirm-modal.component";
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faPeopleGroup, faThumbsUp, faThumbsDown, faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'event-card',
   standalone: true,
-  imports: [NgClass, DatePipe, IntlCurrencyPipe, RouterLink],
+  imports: [NgClass, DatePipe, IntlCurrencyPipe, RouterLink, FaIconComponent],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
 })
@@ -22,6 +24,7 @@ export class EventCardComponent {
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
   #modalService = inject(NgbModal);
+  icons = { faPeopleGroup, faThumbsUp, faThumbsDown, faTrashCan, faUserPen }
 
   attendEvent() {
     const attending = this.event().attend;

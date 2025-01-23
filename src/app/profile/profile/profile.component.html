@@ -6,7 +6,7 @@
             }
             @if (user().me && !imageUpload()) {
                 <label class="btn btn-sm btn-danger">
-                    <i class="bi bi-image"></i>
+                    <fa-icon [icon]="icons.faCameraRetro"></fa-icon>
                 <!-- <input type="file" class="d-none" #fileImage encodeBase64 (encoded)="changeAvatar($event)" /> -->
                 <input type="file" class="d-none" (change)="runCropper($event)" />
                 </label>
@@ -96,7 +96,7 @@
 </div>
 
 <div class="card mt-4">
-    <div class="card-header bg-success text-white" id="address">{{ this.user().name }}'s address</div>
+    <div class="card-header bg-success text-white" id="address"><fa-icon [icon]="icons.faLocationDot"></fa-icon> {{ this.user().name }}'s address</div>
     <div id="map">
         <ol-map [coordinates]="[user().lng, user().lat]">
             <ol-marker [coordinates]="[user().lng, user().lat]"></ol-marker>

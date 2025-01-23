@@ -11,11 +11,13 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'event-detail',
   standalone: true,
-  imports: [EventCardComponent, OlMapDirective, OlMarkerDirective, RouterLink, ReactiveFormsModule, DatePipe],
+  imports: [EventCardComponent, OlMapDirective, OlMarkerDirective, RouterLink, ReactiveFormsModule, DatePipe, FaIconComponent],
   templateUrl: './event-detail.component.html',
   styleUrl: './event-detail.component.css'
 })
@@ -26,6 +28,7 @@ export class EventDetailComponent {
   #modalService = inject(NgbModal);
   #destroyRef = inject(DestroyRef);
   event = input.required<MyEvent>();
+  icons = { faLocationDot };
   newAttendance = signal<boolean>(true);
   attendResource = rxResource({
     request: () => this.event().id,

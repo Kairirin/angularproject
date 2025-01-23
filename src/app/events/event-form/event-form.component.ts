@@ -3,7 +3,6 @@ import { Component, inject, DestroyRef, signal, effect, input } from "@angular/c
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { EncodeBase64Directive } from "../../shared/directives/encode-base64.directive";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
 import { minDateValidator } from "../../shared/validators/min-date.validator";
 import { MyEvent, MyEventInsert } from "../interfaces/my-event";
@@ -25,7 +24,7 @@ import { CropperComponent } from "../../shared/cropper/cropper.component";
 @Component({
   selector: 'event-form',
   standalone: true,
-  imports: [ReactiveFormsModule, EncodeBase64Directive, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent, CropperComponent],
+  imports: [ReactiveFormsModule, ValidationClassesDirective, DatePipe, OlMapDirective, OlMarkerDirective, GaAutocompleteDirective, LoadButtonComponent, CropperComponent],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
 })
