@@ -9,6 +9,7 @@ export const eventsRoutes: Routes = [
     loadComponent: () =>
         import('./events-page/events-page.component').then((m) => m.EventsPageComponent),
     title: 'Events | Angular Events',
+    data: { animation: 'eventsPage' }
   },
   {
     path: 'add',
@@ -16,6 +17,7 @@ export const eventsRoutes: Routes = [
         import('./event-form/event-form.component').then((m) => m.EventFormComponent),
     title: 'New event | Angular Events',
     canDeactivate: [leavePageGuard],
+    data: { animation: 'eventAction' }
   },
   {
     path: ':id/edit',
@@ -26,6 +28,7 @@ export const eventsRoutes: Routes = [
     },
     loadComponent: () =>
         import('./event-form/event-form.component').then((m) => m.EventFormComponent),
+    data: { animation: 'eventAction' }
   },
   {
     path: ':id',
@@ -35,6 +38,7 @@ export const eventsRoutes: Routes = [
     },
     loadComponent: () =>
         import('./event-detail/event-detail.component').then((m) => m.EventDetailComponent),
+    data: { animation: 'eventAction' }
   },
   { path: 'edit', redirectTo: '/events/add', pathMatch: 'full' },
 ];

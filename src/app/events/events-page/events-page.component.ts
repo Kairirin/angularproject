@@ -6,6 +6,7 @@ import { MyEvent } from "../interfaces/my-event";
 import { EventsService } from "../services/events.service";
 import { debounceTime, distinctUntilChanged } from "rxjs";
 import { UsersService } from "../../profile/services/users.service";
+import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 
 @Component({
@@ -13,13 +14,27 @@ import { UsersService } from "../../profile/services/users.service";
   standalone: true,
   imports: [ReactiveFormsModule, EventCardComponent],
   templateUrl: './events-page.component.html',
-  styleUrl: './events-page.component.css'
+  styleUrl: './events-page.component.css',
+  animations: [
+    trigger('animateEvents', [
+      transition(':increment', [
+        query('event-card:enter', [
+          style({ opacity: 0, transform: 'translateY(300px)' }),
+          stagger(
+            100,
+            animate('500ms ease-out', style({ opacity: 1, transform: 'none' }))
+          ),
+        ], {optional: true}),
+      ]),
+    ]),
+  ],
 })
 export class EventsPageComponent {
   #eventsService = inject(EventsService);
   #usersService = inject(UsersService);
   #destroyRef = inject(DestroyRef);
   events = signal<MyEvent[]>([]);
+
   searchControl = new FormControl('');
   search = toSignal(
     this.searchControl.valueChanges.pipe(
@@ -28,13 +43,13 @@ export class EventsPageComponent {
     ),
     { initialValue: '' }
   )
-
   order = signal("distance");
   page = signal(1);
   load = signal(false);
   username = signal('');
   creator = input<string>();
   attending = input<string>();
+  
   info = computed(() => {
     let text = "Events ";
     if (this.username()) {
@@ -93,7 +108,7 @@ export class EventsPageComponent {
         else {
           this.load.set(false);
         }
-      }); //TODO: Mejorar esto.
+      });
 
     this.#usersService.getProfile(Number(this.creator()))
       .pipe(takeUntilDestroyed(this.#destroyRef))

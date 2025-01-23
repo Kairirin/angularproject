@@ -6,11 +6,12 @@ import { provideRouter, withComponentInputBinding, withPreloading, PreloadAllMod
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
 import { provideGoogleId } from './auth/google-login/google-login.config';
 import { provideFacebookId } from './auth/facebook-login/facebook-login.config';
-
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
+    provideAnimationsAsync(),
     provideRouter(
       routes,
       withComponentInputBinding(),

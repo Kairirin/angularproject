@@ -15,12 +15,12 @@
       <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" [formControl]="searchControl">
     </form>
   </div>
-  <div>
-    <p>{{ info() }}</p>
+  <div class="container-fluid">
+    <div class="col">{{ info() }}</div>
   </div>
 </nav>
 
-<div id="eventsContainer" class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+<div id="eventsContainer" [@animateEvents]="events().length" class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
   @for (event of events(); track event.id){
   <event-card class="col" [event]="event" (deleted)="deleteEvent(event)"></event-card>
   }
