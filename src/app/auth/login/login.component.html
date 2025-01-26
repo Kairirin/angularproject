@@ -21,6 +21,7 @@
     <load-button type="submit" [loading]="loading()" (click)="loading.set(!loading())">Login</load-button>
 <!--    <button type="submit" class="btn btn-primary">Login</button> -->
   </form>
+  @defer {
   <div>
     <google-login class="btn" (login)="loginGoogle($event)"></google-login>
     <button fbLogin [scopes]="['email', 'public_profile']" class="btn btn-primary" (loginOk)="loginFacebook($event)" (loginError)="showError($event)">
@@ -28,4 +29,5 @@
       Inicia sesión con Facebook
     </button>
   </div>
+    }
 </div>

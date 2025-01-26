@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { afterNextRender, afterRender, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
@@ -54,7 +54,8 @@ export class LoginComponent {
   };
 
   constructor() {
-    effect(() => {
+    /*     effect(() => { */
+    afterNextRender(() => {
       const coords: Coordinates = {
         latitude: this.actualGeolocation()?.latitude ?? 0,
         longitude: this.actualGeolocation()?.longitude ?? 0,

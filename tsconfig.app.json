@@ -7,11 +7,14 @@
     "types": [
       "google.accounts",
       "facebook-js-sdk",
-      "@angular/localize"
+      "@angular/localize",
+      "node"
     ]
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/main.server.ts",
+    "src/server.ts"
   ],
   "include": [
     "src/**/*.d.ts"

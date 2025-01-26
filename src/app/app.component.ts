@@ -2,7 +2,7 @@ import {  Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { TopMenuComponent } from "./shared/top-menu/top-menu.component";
 import { trigger, transition, query, style, group, animate } from "@angular/animations";
-
+import {SsrCookieService} from 'ngx-cookie-service-ssr';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,7 @@ import { trigger, transition, query, style, group, animate } from "@angular/anim
   imports: [TopMenuComponent, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  providers: [SsrCookieService],
   animations: [
     trigger('routeAnimation', [
       transition('eventsPage => others', [

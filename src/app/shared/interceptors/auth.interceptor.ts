@@ -1,13 +1,15 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { SsrCookieService } from '../services/ssr-cookie.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('token');
+  const token = inject(SsrCookieService).getCookie('token');
 
-  if (token) {
+  if (token) { // Estamos autenticados
     const authReq = req.clone({
       headers: req.headers.set('Authorization', 'Bearer ' + token),
     });
-    return next(authReq);
+    return next(authReq); // Petición con credenciales
   }
-  return next(req);
+  return next(req); // Petición sin credenciales
 };

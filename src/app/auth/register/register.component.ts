@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, effect, signal } from "@angular/core";
+import { Component, inject, DestroyRef, effect, signal, afterRender, afterNextRender } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { ValidationClassesDirective } from "../../shared/directives/validation-classes.directive";
@@ -68,7 +68,8 @@ export class RegisterComponent implements CanComponentDeactivate {
   })
 
   constructor() {
-    effect(() => {
+    /* effect(() => { */
+    afterNextRender(() => {
       const coords: Coordinates = {
         latitude: this.actualGeolocation()?.latitude ?? 0,
         longitude: this.actualGeolocation()?.longitude ?? 0
