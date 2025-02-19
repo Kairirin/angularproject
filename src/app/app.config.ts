@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(withInterceptors([baseUrlInterceptor, authInterceptor]), withFetch()),
     provideClientHydration(withEventReplay()),
-    provideGoogleId('746820501392-oalflicqch2kuc12s8rclb5rf7b1fist.apps.googleusercontent.com'),//'MI ID: 1161264609-p0pct0u7g1b72j2riaqp1mlh284l4smk.apps.googleusercontent.com' 
-    provideFacebookId('3885915868319779', 'v21.0'), provideClientHydration(withEventReplay()), //APP_ID
+    provideGoogleId(''),
+    provideFacebookId('', 'v21.0'), provideClientHydration(withEventReplay()), //APP_ID
   ],
 };
